@@ -400,23 +400,23 @@ function VenueStack({ venues, onSelectVenue }) {
         "absolute left-0 right-0 z-20 transition-all duration-500 ease-out",
         isExpanded
           ? "inset-0 bg-[#0a0a0f]/95 backdrop-blur-xl"
-          : "bottom-24"
+          : "bottom-0 pb-24"
       )}
     >
-      {/* Dark gradient background when collapsed - fades from transparent to dark */}
+      {/* Dark gradient background when collapsed - extends behind bottom menu */}
       {!isExpanded && (
         <div
-          className="absolute inset-0 -top-20 pointer-events-none"
+          className="absolute inset-0 -top-32 pointer-events-none"
           style={{
-            background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0.95) 100%)',
+            background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 20%, rgba(0,0,0,0.95) 50%, rgba(0,0,0,1) 100%)',
           }}
         />
       )}
 
       {/* Header with expand/collapse button */}
       <div className={cn(
-        "relative transition-all duration-500 ease-out",
-        isExpanded ? "px-4 pt-14" : "px-4"
+        "relative transition-all duration-500 ease-out px-4",
+        isExpanded ? "pt-14" : ""
       )}>
         <button
           onClick={() => setIsExpanded(!isExpanded)}
@@ -438,8 +438,8 @@ function VenueStack({ venues, onSelectVenue }) {
       {/* Animated container that grows/shrinks */}
       <div
         className={cn(
-          "transition-all duration-500 ease-out overflow-hidden",
-          isExpanded ? "px-4 pb-24" : ""
+          "relative transition-all duration-500 ease-out overflow-hidden px-4",
+          isExpanded ? "pb-24" : ""
         )}
         style={{
           maxHeight: isExpanded ? 'calc(100vh - 140px)' : '120px',
@@ -640,53 +640,58 @@ function VenueModal({ venue, onClose }) {
 
         {/* Content */}
         <div className="p-5 space-y-4">
-          {/* Venue name & distance */}
-          <div className="flex items-start justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-white">{venue.name}</h2>
-              <p className="text-white/50 text-sm">{venue.type} · {venue.area}</p>
-            </div>
-            <div className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md">
-              <span className="text-white/90 text-sm font-medium">{venue.distance}</span>
-            </div>
-          </div>
-
-          {/* People avatars */}
+          {/* Card-style row: avatars, venue info, distance */}
           <div className="flex items-center gap-3">
+            {/* Avatar stack */}
             <div className="flex flex-shrink-0">
-              {venue.people.slice(0, 3).map((person, idx) => (
+              {venue.people.slice(0, 2).map((person, idx) => (
                 <div
                   key={person.id}
                   className={cn(
-                    "h-10 w-10 rounded-full border border-white/20 overflow-hidden",
+                    "h-9 w-9 rounded-full border border-white/20 overflow-hidden",
                     "shadow-lg shadow-black/20",
-                    idx > 0 && "-ml-4"
+                    idx > 0 && "-ml-5"
                   )}
                 >
                   <img src={person.avatar} alt="" className="h-full w-full object-cover" />
                 </div>
               ))}
-              {extraPeople > 0 && <AnimatedBadge count={extraPeople} size="lg" />}
+              {extraPeople > 0 && <AnimatedBadge count={extraPeople} size="md" />}
             </div>
-            <span className="text-white/60 text-sm">{venue.peopleCount} people here</span>
+
+            {/* Venue info */}
+            <div className="flex-1 min-w-0">
+              <h2 className="text-white font-semibold text-sm truncate">{venue.name}</h2>
+              <p className="text-white/50 text-xs truncate">{venue.type} · {venue.area}</p>
+            </div>
+
+            {/* Distance - subtle */}
+            <span className="text-white/40 text-xs">{venue.distance}</span>
           </div>
 
           {/* Happening message */}
-          <div className="text-center py-2">
-            <p className="text-white/80 text-base font-medium">
-              It's already happening inside ✨
+          <div className="text-center py-3">
+            <p className="text-white/70 text-sm">
+              It's already happening inside
             </p>
           </div>
 
-          {/* Check In Button */}
-          <button className={cn(
-            "w-full py-4 rounded-2xl font-semibold text-white",
-            "bg-gradient-to-r from-pink-500 to-purple-600",
-            "shadow-lg shadow-pink-500/30",
-            "active:scale-[0.98] transition-transform"
-          )}>
-            Check In · {checkInCost} credit
-          </button>
+          {/* Check In Button - gradient border (no animation for pill shape) */}
+          <div
+            className="relative h-11 rounded-full p-[1px]"
+            style={{
+              background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(236, 72, 153))',
+            }}
+          >
+            <button className={cn(
+              "w-full h-full rounded-full",
+              "bg-[#0f0f12] text-white text-sm font-medium",
+              "flex items-center justify-center",
+              "active:scale-[0.98] transition-transform"
+            )}>
+              Check In · {checkInCost} credit
+            </button>
+          </div>
 
           {/* Credits remaining */}
           <p className="text-center text-white/40 text-xs">
