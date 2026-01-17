@@ -666,120 +666,120 @@ function VenueModal({ venue, onClose, onCheckIn }) {
             <X className="h-4 w-4 text-white/70" />
           </button>
 
-        {/* Animated image slideshow */}
-        <div className="relative h-48 overflow-hidden">
-          {VENUE_IMAGES.slice(0, 4).map((img, idx) => (
-            <div
-              key={idx}
-              className={cn(
-                "absolute inset-0 transition-opacity duration-500",
-                currentImageIndex % 4 === idx ? "opacity-100" : "opacity-0"
-              )}
-            >
-              <img
-                src={img}
-                alt=""
-                className="h-full w-full object-cover"
-              />
-            </div>
-          ))}
-          {/* Gradient overlay for text readability */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background: 'linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.8) 100%)',
-            }}
-          />
-          {/* Image indicators */}
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-            {[0, 1, 2, 3].map((idx) => (
+          {/* Animated image slideshow */}
+          <div className="relative h-48 overflow-hidden">
+            {VENUE_IMAGES.slice(0, 4).map((img, idx) => (
               <div
                 key={idx}
                 className={cn(
-                  "h-1 rounded-full transition-all duration-300",
-                  currentImageIndex % 4 === idx
-                    ? "w-4 bg-white"
-                    : "w-1 bg-white/40"
+                  "absolute inset-0 transition-opacity duration-500",
+                  currentImageIndex % 4 === idx ? "opacity-100" : "opacity-0"
                 )}
-              />
+              >
+                <img
+                  src={img}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
+              </div>
             ))}
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="p-5 space-y-4">
-          {/* Card-style row: avatars, venue info, distance */}
-          <div className="flex items-center gap-3">
-            {/* Avatar stack */}
-            <div className="flex flex-shrink-0">
-              {venue.people.slice(0, 2).map((person, idx) => (
+            {/* Gradient overlay for text readability */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background: 'linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.8) 100%)',
+              }}
+            />
+            {/* Image indicators */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+              {[0, 1, 2, 3].map((idx) => (
                 <div
-                  key={person.id}
+                  key={idx}
                   className={cn(
-                    "h-9 w-9 rounded-full border border-white/20 overflow-hidden",
-                    "shadow-lg shadow-black/20",
-                    idx > 0 && "-ml-5"
+                    "h-1 rounded-full transition-all duration-300",
+                    currentImageIndex % 4 === idx
+                      ? "w-4 bg-white"
+                      : "w-1 bg-white/40"
                   )}
-                >
-                  <img src={person.avatar} alt="" className="h-full w-full object-cover" />
-                </div>
+                />
               ))}
-              {extraPeople > 0 && <AnimatedBadge count={extraPeople} size="md" />}
             </div>
-
-            {/* Venue info */}
-            <div className="flex-1 min-w-0">
-              <h2 className="text-white font-semibold text-sm truncate">{venue.name}</h2>
-              <p className="text-white/50 text-xs truncate">{venue.type} · {venue.area}</p>
-            </div>
-
-            {/* Distance - subtle */}
-            <span className="text-white/40 text-xs">{venue.distance}</span>
           </div>
 
-          {/* Happening message */}
-          <div className="text-center py-3">
-            <p className="text-white/70 text-sm">
-              It's already happening inside
+          {/* Content */}
+          <div className="p-5 space-y-4">
+            {/* Card-style row: avatars, venue info, distance */}
+            <div className="flex items-center gap-3">
+              {/* Avatar stack */}
+              <div className="flex flex-shrink-0">
+                {venue.people.slice(0, 2).map((person, idx) => (
+                  <div
+                    key={person.id}
+                    className={cn(
+                      "h-9 w-9 rounded-full border border-white/20 overflow-hidden",
+                      "shadow-lg shadow-black/20",
+                      idx > 0 && "-ml-5"
+                    )}
+                  >
+                    <img src={person.avatar} alt="" className="h-full w-full object-cover" />
+                  </div>
+                ))}
+                {extraPeople > 0 && <AnimatedBadge count={extraPeople} size="md" />}
+              </div>
+
+              {/* Venue info */}
+              <div className="flex-1 min-w-0">
+                <h2 className="text-white font-semibold text-sm truncate">{venue.name}</h2>
+                <p className="text-white/50 text-xs truncate">{venue.type} · {venue.area}</p>
+              </div>
+
+              {/* Distance - subtle */}
+              <span className="text-white/40 text-xs">{venue.distance}</span>
+            </div>
+
+            {/* Happening message */}
+            <div className="text-center py-3">
+              <p className="text-white/70 text-sm">
+                It's already happening inside
+              </p>
+            </div>
+
+            {/* Check In Button - animated gradient border */}
+            <div
+              className="relative h-11 rounded-full p-[1px] overflow-hidden"
+              style={{
+                background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(59, 130, 246), rgb(139, 92, 246), rgb(236, 72, 153))',
+                backgroundSize: '200% 100%',
+                animation: 'shimmerBorder 2s linear infinite',
+              }}
+            >
+              <button
+                onClick={() => onCheckIn && onCheckIn(venue)}
+                className={cn(
+                  "w-full h-full rounded-full",
+                  "bg-[#0f0f12] text-white text-sm font-medium",
+                  "flex items-center justify-center",
+                  "active:scale-[0.98] transition-transform",
+                  "hover:bg-[#1a1a20]"
+                )}
+              >
+                Check In · {checkInCost} credit
+              </button>
+            </div>
+
+            {/* Keyframes for animated border */}
+            <style>{`
+              @keyframes shimmerBorder {
+                0% { background-position: 200% 0; }
+                100% { background-position: -200% 0; }
+              }
+            `}</style>
+
+            {/* Credits remaining */}
+            <p className="text-center text-white/40 text-xs">
+              You have <span className="text-white/70 font-medium">{userCredits} credits</span> remaining
             </p>
           </div>
-
-          {/* Check In Button - animated gradient border */}
-          <div
-            className="relative h-11 rounded-full p-[1px] overflow-hidden"
-            style={{
-              background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(59, 130, 246), rgb(139, 92, 246), rgb(236, 72, 153))',
-              backgroundSize: '200% 100%',
-              animation: 'shimmerBorder 2s linear infinite',
-            }}
-          >
-            <button
-              onClick={() => onCheckIn && onCheckIn(venue)}
-              className={cn(
-                "w-full h-full rounded-full",
-                "bg-[#0f0f12] text-white text-sm font-medium",
-                "flex items-center justify-center",
-                "active:scale-[0.98] transition-transform",
-                "hover:bg-[#1a1a20]"
-              )}
-            >
-              Check In · {checkInCost} credit
-            </button>
-          </div>
-
-          {/* Keyframes for animated border */}
-          <style>{`
-            @keyframes shimmerBorder {
-              0% { background-position: 200% 0; }
-              100% { background-position: -200% 0; }
-            }
-          `}</style>
-
-          {/* Credits remaining */}
-          <p className="text-center text-white/40 text-xs">
-            You have <span className="text-white/70 font-medium">{userCredits} credits</span> remaining
-          </p>
-        </div>
         </div>
       </div>
     </div>
