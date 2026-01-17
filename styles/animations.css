@@ -1,0 +1,800 @@
+/**
+ * ============================================================================
+ * HACTUALLY DESIGN SYSTEM - ANIMATIONS
+ * ============================================================================
+ *
+ * Mobile-optimized animations for a dating app experience.
+ * Includes gesture feedback, match celebrations, and micro-interactions.
+ */
+
+/* ==========================================================================
+   KEYFRAME ANIMATIONS
+   ========================================================================== */
+
+/* --- Loading & Progress --- */
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(233, 30, 140, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(233, 30, 140, 0.6);
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* --- Entrance Animations --- */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleInBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* --- Exit Animations --- */
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideOutUp {
+  from { transform: translateY(0); }
+  to { transform: translateY(-100%); }
+}
+
+@keyframes slideOutDown {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+/* --- Card Swipe Animations (Dating App Core) --- */
+
+@keyframes swipeRight {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(150%) rotate(30deg);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeLeft {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-150%) rotate(-30deg);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-150%) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes cardStack {
+  from {
+    transform: scale(0.95) translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* --- Match & Celebration Animations --- */
+
+@keyframes matchPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.3); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.3); }
+  70% { transform: scale(1); }
+}
+
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes firework {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* --- Notification & Alert Animations --- */
+
+@keyframes spotNotification {
+  0% {
+    transform: scale(0.5) translateY(20px);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1) translateY(-5px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(-15px);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+@keyframes ring {
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(15deg); }
+  20% { transform: rotate(-15deg); }
+  30% { transform: rotate(10deg); }
+  40% { transform: rotate(-10deg); }
+  50% { transform: rotate(5deg); }
+  60% { transform: rotate(-5deg); }
+  70%, 100% { transform: rotate(0deg); }
+}
+
+/* --- Map & Location Animations --- */
+
+@keyframes locationPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+@keyframes markerBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes markerPop {
+  0% {
+    transform: scale(0) translateY(20px);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2) translateY(-5px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* --- Avatar & Profile Animations --- */
+
+@keyframes avatarOnline {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(32, 201, 188, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(32, 201, 188, 0);
+  }
+}
+
+@keyframes avatarSpotted {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(233, 30, 140, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(233, 30, 140, 0);
+  }
+}
+
+@keyframes profileReveal {
+  0% {
+    clip-path: circle(0% at 50% 50%);
+  }
+  100% {
+    clip-path: circle(100% at 50% 50%);
+  }
+}
+
+/* --- Button & Interactive Animations --- */
+
+@keyframes buttonPress {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 5px var(--pink-500), 0 0 10px var(--pink-500);
+  }
+  50% {
+    box-shadow: 0 0 15px var(--pink-500), 0 0 30px var(--pink-500);
+  }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* --- Chat Animations --- */
+
+@keyframes messageBubbleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes typing {
+  0%, 60%, 100% { opacity: 0.3; }
+  30% { opacity: 1; }
+}
+
+/* --- Credit/Coin Animations --- */
+
+@keyframes coinFlip {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+@keyframes creditSpend {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.5) translateY(-50px);
+    opacity: 0;
+  }
+}
+
+/* --- Star Border Animations (Glowing Border Effect) --- */
+
+@keyframes star-movement-bottom {
+  0% {
+    transform: translate(0%, 0%);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-100%, 0%);
+    opacity: 0;
+  }
+}
+
+@keyframes star-movement-top {
+  0% {
+    transform: translate(0%, 0%);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(100%, 0%);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmerText {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: -100% 50%;
+  }
+}
+
+/* ==========================================================================
+   UTILITY CLASSES
+   ========================================================================== */
+
+/* --- Animation Utilities --- */
+
+.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-shimmer { animation: shimmer 1.5s infinite; }
+.animate-spin { animation: spin 1s linear infinite; }
+
+.animate-fade-in { animation: fadeIn 200ms ease-out forwards; }
+.animate-fade-in-up { animation: fadeInUp 300ms ease-out forwards; }
+.animate-fade-in-down { animation: fadeInDown 300ms ease-out forwards; }
+.animate-slide-in-up { animation: slideInUp 300ms ease-out forwards; }
+.animate-slide-in-down { animation: slideInDown 300ms ease-out forwards; }
+.animate-scale-in { animation: scaleIn 200ms ease-out forwards; }
+.animate-scale-in-bounce { animation: scaleInBounce 400ms ease-out forwards; }
+
+.animate-fade-out { animation: fadeOut 200ms ease-out forwards; }
+.animate-slide-out-up { animation: slideOutUp 300ms ease-out forwards; }
+.animate-slide-out-down { animation: slideOutDown 300ms ease-out forwards; }
+
+.animate-swipe-right { animation: swipeRight 300ms ease-out forwards; }
+.animate-swipe-left { animation: swipeLeft 300ms ease-out forwards; }
+.animate-swipe-up { animation: swipeUp 300ms ease-out forwards; }
+.animate-card-stack { animation: cardStack 300ms ease-out forwards; }
+
+.animate-match-pop { animation: matchPop 500ms ease-out forwards; }
+.animate-heart-beat { animation: heartBeat 1s ease-in-out; }
+.animate-sparkle { animation: sparkle 600ms ease-out forwards; }
+
+.animate-spot-notification { animation: spotNotification 400ms ease-out forwards; }
+.animate-shake { animation: shake 500ms ease-in-out; }
+.animate-wiggle { animation: wiggle 300ms ease-in-out; }
+.animate-bounce { animation: bounce 1s infinite; }
+.animate-ring { animation: ring 1s ease-in-out; }
+
+.animate-location-pulse { animation: locationPulse 2s ease-out infinite; }
+.animate-marker-bounce { animation: markerBounce 500ms ease-in-out infinite; }
+.animate-marker-pop { animation: markerPop 300ms ease-out forwards; }
+
+.animate-avatar-online { animation: avatarOnline 2s ease-out infinite; }
+.animate-avatar-spotted { animation: avatarSpotted 1.5s ease-out infinite; }
+
+.animate-button-press { animation: buttonPress 150ms ease-out; }
+.animate-glow-pulse { animation: glowPulse 2s ease-in-out infinite; }
+.animate-gradient-shift {
+  animation: gradientShift 3s ease infinite;
+  background-size: 200% 200%;
+}
+
+.animate-message-in { animation: messageBubbleIn 200ms ease-out forwards; }
+.animate-typing { animation: typing 1.4s ease-in-out infinite; }
+
+.animate-coin-flip { animation: coinFlip 600ms ease-in-out; }
+.animate-credit-spend { animation: creditSpend 400ms ease-out forwards; }
+
+.animate-star-movement-bottom { animation: star-movement-bottom linear infinite alternate; }
+.animate-star-movement-top { animation: star-movement-top linear infinite alternate; }
+
+/* --- Stagger Delays --- */
+
+.stagger-1 { animation-delay: 50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }
+.stagger-5 { animation-delay: 250ms; }
+.stagger-6 { animation-delay: 300ms; }
+.stagger-7 { animation-delay: 350ms; }
+.stagger-8 { animation-delay: 400ms; }
+
+/* --- Transition Utilities --- */
+
+.transition-none { transition: none; }
+.transition-all { transition: all 200ms ease-out; }
+.transition-colors { transition: color, background-color, border-color 150ms ease-out; }
+.transition-opacity { transition: opacity 150ms ease-out; }
+.transition-transform { transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1); }
+.transition-shadow { transition: box-shadow 200ms ease-out; }
+
+/* --- Duration Modifiers --- */
+
+.duration-fast { transition-duration: 100ms; animation-duration: 100ms; }
+.duration-normal { transition-duration: 150ms; animation-duration: 150ms; }
+.duration-moderate { transition-duration: 200ms; animation-duration: 200ms; }
+.duration-slow { transition-duration: 300ms; animation-duration: 300ms; }
+.duration-slower { transition-duration: 400ms; animation-duration: 400ms; }
+
+/* --- Easing Modifiers --- */
+
+.ease-linear { transition-timing-function: linear; animation-timing-function: linear; }
+.ease-in { transition-timing-function: cubic-bezier(0.4, 0, 1, 1); }
+.ease-out { transition-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+.ease-in-out { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+.ease-bounce { transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
+.ease-smooth { transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+.ease-spring { transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+/* --- Interactive States --- */
+
+.hover-lift {
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+.hover-scale {
+  transition: transform 150ms ease-out;
+}
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.hover-glow-pink {
+  transition: box-shadow 200ms ease-out;
+}
+.hover-glow-pink:hover {
+  box-shadow: var(--glow-pink-md);
+}
+
+.hover-glow-cyan {
+  transition: box-shadow 200ms ease-out;
+}
+.hover-glow-cyan:hover {
+  box-shadow: var(--glow-cyan-md);
+}
+
+.active-scale {
+  transition: transform 100ms ease-out;
+}
+.active-scale:active {
+  transform: scale(0.97);
+}
+
+.press-effect {
+  transition: transform 100ms ease-out, opacity 100ms ease-out;
+}
+.press-effect:active {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+/* --- Focus States --- */
+
+.focus-ring-pink:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-pink);
+}
+
+.focus-ring-cyan:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-cyan);
+}
+
+.focus-ring-white:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-white);
+}
+
+/* --- Gesture Feedback (Touch) --- */
+
+.touch-feedback {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.touch-feedback:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* --- Reduced Motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .animate-pulse,
+  .animate-pulse-glow,
+  .animate-shimmer,
+  .animate-spin,
+  .animate-bounce,
+  .animate-location-pulse,
+  .animate-marker-bounce,
+  .animate-avatar-online,
+  .animate-avatar-spotted,
+  .animate-glow-pulse,
+  .animate-gradient-shift,
+  .animate-typing {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   SPECIAL EFFECTS
+   ========================================================================== */
+
+/* Gradient Text */
+.text-gradient-pink {
+  background: linear-gradient(135deg, var(--pink-400), var(--pink-600));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-brand {
+  background: linear-gradient(135deg, var(--pink-500), var(--cyan-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-match {
+  background: linear-gradient(135deg, var(--pink-500), var(--orange-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glassmorphism */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+
+.glass-light {
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+
+.glass-dark {
+  background: var(--glass-bg-dark);
+  backdrop-filter: blur(var(--glass-blur-heavy));
+  -webkit-backdrop-filter: blur(var(--glass-blur-heavy));
+  border: 1px solid var(--glass-border);
+}
+
+/* Neon Glow Text */
+.neon-pink {
+  text-shadow:
+    0 0 5px var(--pink-500),
+    0 0 10px var(--pink-500),
+    0 0 20px var(--pink-500);
+}
+
+.neon-cyan {
+  text-shadow:
+    0 0 5px var(--cyan-500),
+    0 0 10px var(--cyan-500),
+    0 0 20px var(--cyan-500);
+}
+
+/* Shimmer Skeleton */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--purple-800);
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--white-10),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+/* Line Clamping */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
