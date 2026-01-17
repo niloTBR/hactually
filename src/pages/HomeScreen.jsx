@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Map, { Marker } from 'react-map-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import {
   MapPin,
   ChevronDown,
@@ -16,6 +18,9 @@ import {
 import { useAuthStore } from '../store/authStore';
 import { cn } from '../lib/utils';
 import StarBorder from '../components/StarBorder';
+
+// Mapbox access token - replace with your own or set via env variable
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
 
 /**
  * Home Screen - Map Discovery View (2A)
@@ -34,7 +39,17 @@ const PROFILE_IMAGES = [
   '/images/arrul-lin-sYhUhse5uT8-unsplash.jpg',
 ];
 
-// Mock venue data with people checked in
+// Venue images - actual venue photos
+const VENUE_IMAGES = [
+  '/venues/1.jpg',
+  '/venues/2.jpg',
+  '/venues/3.webp',
+  '/venues/4.jpg',
+  '/venues/5.jpeg',
+  '/venues/6.jpg',
+];
+
+// Mock venue data with people checked in - using real Dubai coordinates
 const VENUES = [
   {
     id: 1,
@@ -42,7 +57,9 @@ const VENUES = [
     area: 'Meydan',
     type: 'Nightclub',
     peopleCount: 47,
-    position: { top: '25%', left: '60%' },
+    distance: '130m',
+    image: VENUE_IMAGES[0],
+    coordinates: { lng: 55.2885, lat: 25.1688 }, // Meydan area
     people: [
       { id: 1, avatar: PROFILE_IMAGES[0] },
       { id: 2, avatar: PROFILE_IMAGES[1] },
@@ -54,7 +71,9 @@ const VENUES = [
     area: 'Four Seasons',
     type: 'Beach Club',
     peopleCount: 23,
-    position: { top: '45%', left: '30%' },
+    distance: '250m',
+    image: VENUE_IMAGES[1],
+    coordinates: { lng: 55.1924, lat: 25.2027 }, // Jumeirah Beach
     people: [
       { id: 3, avatar: PROFILE_IMAGES[2] },
       { id: 4, avatar: PROFILE_IMAGES[3] },
@@ -66,7 +85,9 @@ const VENUES = [
     area: 'DIFC',
     type: 'Restaurant & Bar',
     peopleCount: 31,
-    position: { top: '55%', left: '55%' },
+    distance: '10m',
+    image: VENUE_IMAGES[2],
+    coordinates: { lng: 55.2795, lat: 25.2116 }, // DIFC
     people: [
       { id: 5, avatar: PROFILE_IMAGES[4] },
       { id: 6, avatar: PROFILE_IMAGES[5] },
@@ -78,7 +99,9 @@ const VENUES = [
     area: 'Meydan',
     type: 'Club & Lounge',
     peopleCount: 52,
-    position: { top: '35%', left: '75%' },
+    distance: '450m',
+    image: VENUE_IMAGES[3],
+    coordinates: { lng: 55.3045, lat: 25.1720 }, // Meydan
     people: [
       { id: 7, avatar: PROFILE_IMAGES[6] },
       { id: 8, avatar: PROFILE_IMAGES[7] },
@@ -90,7 +113,9 @@ const VENUES = [
     area: 'Marina',
     type: 'Nightclub',
     peopleCount: 18,
-    position: { top: '65%', left: '40%' },
+    distance: '1.2km',
+    image: VENUE_IMAGES[4],
+    coordinates: { lng: 55.1344, lat: 25.0802 }, // Dubai Marina
     people: [
       { id: 9, avatar: PROFILE_IMAGES[4] },
       { id: 10, avatar: PROFILE_IMAGES[5] },
@@ -216,34 +241,103 @@ function LocationSearchDropdown({ isOpen, onClose, onSelect, searchQuery, setSea
 }
 
 /**
- * Dark Map Background - simple gradient
+ * Interactive Mapbox Map with dark style
  */
-function DarkMap({ children }) {
+function InteractiveMap({ venues, onVenueClick, selectedVenue }) {
+  const [viewState, setViewState] = React.useState({
+    longitude: 55.2708, // DIFC center
+    latitude: 25.2048,
+    zoom: 12,
+    pitch: 45, // Slight 3D tilt
+    bearing: 0,
+  });
+
   return (
-    <div className="absolute inset-0 bg-[#0a0a0f]">
-      {/* Subtle grid pattern */}
+    <div className="absolute inset-0">
+      <Map
+        {...viewState}
+        onMove={evt => setViewState(evt.viewState)}
+        mapStyle="mapbox://styles/mapbox/dark-v11"
+        mapboxAccessToken={MAPBOX_TOKEN}
+        style={{ width: '100%', height: '100%' }}
+        attributionControl={false}
+      >
+        {/* Venue Markers */}
+        {venues.map((venue) => (
+          <Marker
+            key={venue.id}
+            longitude={venue.coordinates.lng}
+            latitude={venue.coordinates.lat}
+            anchor="center"
+          >
+            <VenueMapMarker
+              venue={venue}
+              isSelected={selectedVenue?.id === venue.id}
+              onClick={() => onVenueClick(venue)}
+            />
+          </Marker>
+        ))}
+      </Map>
+
+      {/* Gradient overlay for better UI contrast */}
       <div
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px',
-        }}
-      />
-      {/* Purple ambient glow */}
-      <div
-        className="absolute inset-0"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
-            radial-gradient(circle at 70% 60%, rgba(236, 72, 153, 0.1) 0%, transparent 40%)
+            linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 30%),
+            linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 40%)
           `,
         }}
       />
-      {children}
     </div>
+  );
+}
+
+/**
+ * Venue marker for the Mapbox map
+ */
+function VenueMapMarker({ venue, isSelected, onClick }) {
+  const extraPeople = Math.max(0, venue.peopleCount - venue.people.length);
+
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "relative transition-all duration-300",
+        isSelected && "scale-110 z-20"
+      )}
+    >
+      {/* Avatar stack */}
+      <div className="relative flex items-center">
+        {venue.people.slice(0, 2).map((person, idx) => (
+          <div
+            key={person.id}
+            className={cn(
+              "h-9 w-9 rounded-full border border-white/20 overflow-hidden",
+              "shadow-lg shadow-black/50",
+              idx > 0 && "-ml-5"
+            )}
+          >
+            <img
+              src={person.avatar}
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          </div>
+        ))}
+        {extraPeople > 0 && <AnimatedBadge count={extraPeople} size="md" />}
+      </div>
+
+      {/* Venue name label */}
+      <div className={cn(
+        "absolute top-full left-1/2 -translate-x-1/2 mt-1.5",
+        "px-2 py-0.5 rounded-full",
+        "bg-black/70 backdrop-blur-sm",
+        "text-[10px] font-medium text-white whitespace-nowrap"
+      )}>
+        {venue.name}
+      </div>
+    </button>
   );
 }
 
@@ -276,60 +370,10 @@ function AnimatedBadge({ count, size = 'md' }) {
   );
 }
 
-/**
- * Venue Map Marker with profile avatars
- */
-function VenueMarker({ venue, onClick, isSelected }) {
-  const extraPeople = Math.max(0, venue.peopleCount - venue.people.length);
-
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "absolute transform -translate-x-1/2 -translate-y-1/2 z-10",
-        "transition-all duration-300",
-        isSelected && "scale-110 z-20"
-      )}
-      style={{ top: venue.position.top, left: venue.position.left }}
-    >
-      {/* Avatar stack - super close together with 1px borders */}
-      <div className="relative flex items-center">
-        {venue.people.slice(0, 2).map((person, idx) => (
-          <div
-            key={person.id}
-            className={cn(
-              "h-9 w-9 rounded-full border border-white/20 overflow-hidden",
-              "shadow-lg shadow-black/50",
-              idx > 0 && "-ml-5"
-            )}
-          >
-            <img
-              src={person.avatar}
-              alt=""
-              className="h-full w-full object-cover"
-            />
-          </div>
-        ))}
-
-        {/* Animated +N indicator */}
-        {extraPeople > 0 && <AnimatedBadge count={extraPeople} size="md" />}
-      </div>
-
-      {/* Venue name label */}
-      <div className={cn(
-        "absolute top-full left-1/2 -translate-x-1/2 mt-1.5",
-        "px-2 py-0.5 rounded-full",
-        "bg-black/70 backdrop-blur-sm",
-        "text-[10px] font-medium text-white whitespace-nowrap"
-      )}>
-        {venue.name}
-      </div>
-    </button>
-  );
-}
 
 /**
  * Auto-rotating Card Stack - 3D effect with stacked cards visible at top
+ * Smooth expand/collapse transition for fluid user experience
  */
 function VenueStack({ venues, onSelectVenue }) {
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -351,29 +395,62 @@ function VenueStack({ venues, onSelectVenue }) {
   ];
 
   return (
-    <>
-      {/* Collapsed Stack View - at bottom with 3D stack effect visible at top */}
+    <div
+      className={cn(
+        "absolute left-0 right-0 z-20 transition-all duration-500 ease-out",
+        isExpanded
+          ? "inset-0 bg-[#0a0a0f]/95 backdrop-blur-xl"
+          : "bottom-24"
+      )}
+    >
+      {/* Dark gradient background when collapsed - fades from transparent to dark */}
       {!isExpanded && (
-        <div className="absolute bottom-24 left-4 right-4 z-20">
-          {/* Header with expand button */}
-          <button
-            onClick={() => setIsExpanded(true)}
-            className="w-full flex items-center justify-between px-2 py-2 mb-4"
-          >
-            <span className="text-white/70 text-xs font-medium">
-              {venues.length} venues nearby
-            </span>
-            <div className="flex items-center gap-1 text-white/50">
-              <span className="text-[10px]">View all</span>
-              <ChevronDown className="h-3.5 w-3.5 rotate-180" />
-            </div>
-          </button>
+        <div
+          className="absolute inset-0 -top-20 pointer-events-none"
+          style={{
+            background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0.95) 100%)',
+          }}
+        />
+      )}
 
-          {/* Stacked cards - 3D effect with cards peeking from top */}
-          <div className="relative h-[90px]">
+      {/* Header with expand/collapse button */}
+      <div className={cn(
+        "relative transition-all duration-500 ease-out",
+        isExpanded ? "px-4 pt-14" : "px-4"
+      )}>
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full flex items-center justify-between px-2 py-2 mb-4"
+        >
+          <span className="text-white/80 text-sm font-medium">
+            Where people are tonight
+          </span>
+          <div className="flex items-center gap-1 text-white/50">
+            <span className="text-[10px]">{isExpanded ? 'Close' : 'View all'}</span>
+            <ChevronDown className={cn(
+              "h-3.5 w-3.5 transition-transform duration-300",
+              !isExpanded && "rotate-180"
+            )} />
+          </div>
+        </button>
+      </div>
+
+      {/* Animated container that grows/shrinks */}
+      <div
+        className={cn(
+          "transition-all duration-500 ease-out overflow-hidden",
+          isExpanded ? "px-4 pb-24" : ""
+        )}
+        style={{
+          maxHeight: isExpanded ? 'calc(100vh - 140px)' : '120px',
+        }}
+      >
+        {/* Content: either stacked view or full list */}
+        {!isExpanded ? (
+          // Collapsed: Stacked cards with 3D effect
+          <div className="relative h-[120px]">
             {orderedVenues.slice(0, 3).map((venue, index) => {
               const isTop = index === 0;
-              // Cards stack UP (negative Y) so the 3D effect is at the top
               return (
                 <div
                   key={venue.id}
@@ -392,92 +469,91 @@ function VenueStack({ venues, onSelectVenue }) {
               );
             })}
           </div>
-        </div>
-      )}
-
-      {/* Expanded Full List */}
-      {isExpanded && (
-        <div className="absolute inset-0 z-40 bg-[#0a0a0f]/95 backdrop-blur-xl">
-          {/* Header - same style as collapsed */}
-          <div className="px-4 pt-14">
-            <button
-              onClick={() => setIsExpanded(false)}
-              className="w-full flex items-center justify-between px-2 py-2 mb-2"
-            >
-              <span className="text-white/70 text-xs font-medium">
-                {venues.length} venues nearby
-              </span>
-              <div className="flex items-center gap-1 text-white/50">
-                <span className="text-[10px]">Close</span>
-                <ChevronDown className="h-3.5 w-3.5" />
-              </div>
-            </button>
-          </div>
-
-          {/* Scrollable list */}
-          <div className="px-4 pb-24 space-y-3 overflow-y-auto" style={{ maxHeight: 'calc(100% - 100px)' }}>
-            {venues.map((venue) => (
+        ) : (
+          // Expanded: Scrollable list with stagger animation
+          <div className="space-y-3 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 180px)' }}>
+            {venues.map((venue, index) => (
               <div
                 key={venue.id}
                 onClick={() => {
                   setIsExpanded(false);
                   onSelectVenue(venue);
                 }}
-                className="cursor-pointer"
+                className="cursor-pointer animate-fade-in-up"
+                style={{
+                  animationDelay: `${index * 50}ms`,
+                  animationFillMode: 'both',
+                }}
               >
                 <VenueCard venue={venue} depth={0} />
               </div>
             ))}
           </div>
-        </div>
-      )}
-    </>
+        )}
+      </div>
+    </div>
   );
 }
 
 /**
- * Individual Venue Card - Dark gradient with subtle border for 3D stack effect
+ * Individual Venue Card - Image background with gradient overlay
  */
 function VenueCard({ venue, depth = 0 }) {
   const extraPeople = Math.max(0, venue.peopleCount - venue.people.length);
 
-  // Darker cards as they go deeper in stack
-  const bgColors = [
-    'bg-[#1c1c22]',  // Top card - lightest
-    'bg-[#16161a]',  // Second
-    'bg-[#111114]',  // Third - darkest
-  ];
+  // Opacity decreases for deeper cards in stack
+  const opacityLevels = [1, 0.9, 0.8];
 
   return (
-    <div className={cn(
-      bgColors[depth] || bgColors[0],
-      "rounded-2xl p-4 border border-white/[0.08]"
-    )}>
-      <div className="flex items-center gap-3">
-        {/* Avatar stack - super close together, 1px borders */}
-        <div className="flex flex-shrink-0">
-          {venue.people.slice(0, 2).map((person, idx) => (
-            <div
-              key={person.id}
-              className={cn(
-                "h-10 w-10 rounded-full border border-white/10 overflow-hidden",
-                idx > 0 && "-ml-5"
-              )}
-            >
-              <img src={person.avatar} alt="" className="h-full w-full object-cover" />
-            </div>
-          ))}
-          {extraPeople > 0 && <AnimatedBadge count={extraPeople} size="lg" />}
-        </div>
+    <div
+      className="relative rounded-2xl overflow-hidden border border-white/[0.08]"
+      style={{ opacity: opacityLevels[depth] || 1 }}
+    >
+      {/* Venue image background */}
+      <div className="absolute inset-0">
+        <img
+          src={venue.image}
+          alt={venue.name}
+          className="h-full w-full object-cover"
+        />
+        {/* Gradient overlay - fades to black at bottom */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.95) 100%)',
+          }}
+        />
+      </div>
 
-        {/* Venue info */}
-        <div className="flex-1 min-w-0">
-          <h3 className="text-white font-semibold text-sm truncate">{venue.name}</h3>
-          <p className="text-white/40 text-xs truncate">{venue.type} · {venue.area}</p>
-        </div>
+      {/* Content overlaid on image */}
+      <div className="relative z-10 p-4 pt-10">
+        <div className="flex items-center gap-3">
+          {/* Avatar stack - super close together */}
+          <div className="flex flex-shrink-0">
+            {venue.people.slice(0, 2).map((person, idx) => (
+              <div
+                key={person.id}
+                className={cn(
+                  "h-9 w-9 rounded-full border border-white/20 overflow-hidden",
+                  "shadow-lg shadow-black/30",
+                  idx > 0 && "-ml-5"
+                )}
+              >
+                <img src={person.avatar} alt="" className="h-full w-full object-cover" />
+              </div>
+            ))}
+            {extraPeople > 0 && <AnimatedBadge count={extraPeople} size="md" />}
+          </div>
 
-        {/* Right arrow */}
-        <ChevronRight className="h-5 w-5 text-white/30 flex-shrink-0" />
+          {/* Venue info */}
+          <div className="flex-1 min-w-0">
+            <h3 className="text-white font-semibold text-sm truncate">{venue.name}</h3>
+            <p className="text-white/50 text-xs truncate">{venue.type} · {venue.distance}</p>
+          </div>
+
+          {/* Right arrow */}
+          <ChevronRight className="h-5 w-5 text-white/40 flex-shrink-0" />
+        </div>
       </div>
     </div>
   );
@@ -609,23 +685,24 @@ function BottomNavIsland({ activeTab, onTabChange }) {
                     : "hover:bg-white/5 active:bg-white/10"
                 )}
               >
+                {/* Icon - pink when active */}
                 <item.icon
                   className={cn(
                     "h-5 w-5 transition-colors duration-300",
                     isActive ? "text-pink-400" : "text-white/40"
                   )}
                 />
-                {/* Label only shows when active - animated gradient text */}
+                {/* Label with animated gradient when active */}
                 {isActive && (
                   <span
-                    className="text-xs font-semibold relative overflow-hidden"
+                    className="text-xs font-semibold"
                     style={{
-                      background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(236, 72, 153))',
-                      backgroundSize: '200% 100%',
+                      background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(59, 130, 246), rgb(139, 92, 246), rgb(236, 72, 153))',
+                      backgroundSize: '300% 100%',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
                       backgroundClip: 'text',
-                      animation: 'shimmerText 2s linear infinite',
+                      animation: 'shimmerText 1s linear infinite',
                     }}
                   >
                     {item.label}
@@ -697,19 +774,13 @@ export default function HomeScreen() {
   };
 
   return (
-    <div className="h-full bg-purple-950 relative overflow-hidden">
-      {/* Dark Map Background */}
-      <DarkMap>
-        {/* Venue Markers on Map */}
-        {VENUES.map((venue) => (
-          <VenueMarker
-            key={venue.id}
-            venue={venue}
-            isSelected={selectedVenue?.id === venue.id}
-            onClick={() => setModalVenue(venue)}
-          />
-        ))}
-      </DarkMap>
+    <div className="h-full relative overflow-hidden">
+      {/* Interactive Mapbox Map */}
+      <InteractiveMap
+        venues={VENUES}
+        selectedVenue={selectedVenue}
+        onVenueClick={(venue) => setModalVenue(venue)}
+      />
 
       {/* Location Permission Modal */}
       {showLocationModal && (
@@ -727,10 +798,11 @@ export default function HomeScreen() {
           onClick={() => setIsSearchOpen(!isSearchOpen)}
           className={cn(
             "w-full",
-            !isSearchOpen && "[&>div:first-child]:opacity-0 [&>div:nth-child(2)]:opacity-0"
+            !isSearchOpen && "[&>div:first-child]:opacity-0 [&>div:nth-child(2)]:opacity-0",
+            isSearchOpen && "[&>div:first-child]:opacity-100 [&>div:nth-child(2)]:opacity-100"
           )}
           color="rgb(236, 72, 153)"
-          speed="4s"
+          speed="2s"
         >
           <div className={cn(
             "flex items-center gap-3 px-4 py-3 rounded-2xl",
