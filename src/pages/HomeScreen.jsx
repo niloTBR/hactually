@@ -562,7 +562,7 @@ function VenueCard({ venue, depth = 0 }) {
 /**
  * Venue Details Modal - Frosted glass with animated images
  */
-function VenueModal({ venue, onClose }) {
+function VenueModal({ venue, onClose, onCheckIn }) {
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
   const [userCredits] = React.useState(5); // Mock user credits
 
@@ -676,22 +676,36 @@ function VenueModal({ venue, onClose }) {
             </p>
           </div>
 
-          {/* Check In Button - gradient border (no animation for pill shape) */}
+          {/* Check In Button - animated gradient border */}
           <div
-            className="relative h-11 rounded-full p-[1px]"
+            className="relative h-11 rounded-full p-[1px] overflow-hidden"
             style={{
-              background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(236, 72, 153))',
+              background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(59, 130, 246), rgb(139, 92, 246), rgb(236, 72, 153))',
+              backgroundSize: '200% 100%',
+              animation: 'shimmerBorder 2s linear infinite',
             }}
           >
-            <button className={cn(
-              "w-full h-full rounded-full",
-              "bg-[#0f0f12] text-white text-sm font-medium",
-              "flex items-center justify-center",
-              "active:scale-[0.98] transition-transform"
-            )}>
+            <button
+              onClick={() => onCheckIn && onCheckIn(venue)}
+              className={cn(
+                "w-full h-full rounded-full",
+                "bg-[#0f0f12] text-white text-sm font-medium",
+                "flex items-center justify-center",
+                "active:scale-[0.98] transition-transform",
+                "hover:bg-[#1a1a20]"
+              )}
+            >
               Check In · {checkInCost} credit
             </button>
           </div>
+
+          {/* Keyframes for animated border */}
+          <style>{`
+            @keyframes shimmerBorder {
+              0% { background-position: 200% 0; }
+              100% { background-position: -200% 0; }
+            }
+          `}</style>
 
           {/* Credits remaining */}
           <p className="text-center text-white/40 text-xs">
@@ -892,6 +906,10 @@ export default function HomeScreen() {
       <VenueModal
         venue={modalVenue}
         onClose={() => setModalVenue(null)}
+        onCheckIn={(venue) => {
+          setModalVenue(null);
+          navigate(`/checked-in/${venue.id}`);
+        }}
       />
     </div>
   );

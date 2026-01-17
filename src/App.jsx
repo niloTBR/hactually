@@ -15,6 +15,7 @@ import {
 import HomeScreen from './pages/HomeScreen';
 import FlowsScreen from './pages/FlowsScreen';
 import MatchScreen from './pages/MatchScreen';
+import CheckedInScreen from './pages/CheckedInScreen';
 
 // Design System
 import StyleGuide from './StyleGuide';
@@ -133,6 +134,10 @@ export default function App() {
 
           {/* Match Screen - accessible for demo */}
           <Route path="/match" element={<MatchScreen />} />
+
+          {/* Checked In Screen */}
+          <Route path="/checked-in/:venueId" element={<CheckedInScreen />} />
+          <Route path="/checked-in" element={<CheckedInScreen />} />
 
           {/* Design System (hidden from normal flow, accessible via direct URL) */}
           <Route path="/design-system" element={<StyleGuide />} />
