@@ -4,6 +4,7 @@ import { MapPin, X, Eye, LogOut, RefreshCw, LayoutGrid, Globe } from 'lucide-rea
 import { cn } from '../lib/utils';
 import DomeGallery from '../components/DomeGallery';
 import InfiniteMenu from '../components/InfiniteMenu';
+import Orb from '../components/Orb';
 
 // Profile images
 const PROFILE_IMAGES = [
@@ -34,6 +35,14 @@ const GALLERY_IMAGES = PEOPLE.map(person => ({
   src: person.avatar,
   alt: person.name,
   data: person // Attach full person data
+}));
+
+// Convert PEOPLE to InfiniteMenu format
+const MENU_ITEMS = PEOPLE.map(person => ({
+  image: person.avatar,
+  title: person.name,
+  description: person.bio,
+  data: person
 }));
 
 /**
@@ -245,6 +254,9 @@ export default function CheckedInScreen() {
   const { venueId } = useParams();
   const [selectedPerson, setSelectedPerson] = React.useState(null);
   const [spotted, setSpotted] = React.useState([]);
+  const [viewMode, setViewMode] = React.useState('dome'); // 'dome' or 'sphere'
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [isMoving, setIsMoving] = React.useState(false);
 
   // Mock venue data (in real app, fetch based on venueId)
   const venue = {
@@ -258,6 +270,10 @@ export default function CheckedInScreen() {
       setSpotted([...spotted, person.id]);
     }
   };
+
+  // Get active person for sphere view
+  const activePerson = PEOPLE[activeIndex % PEOPLE.length];
+  const isActiveSpotted = spotted.includes(activePerson?.id);
 
   return (
     <div className="h-full relative overflow-hidden bg-[#0a0a0f]">
@@ -276,6 +292,33 @@ export default function CheckedInScreen() {
           <span className="flex-1 text-white text-sm font-medium">
             {venue.name}
           </span>
+
+          {/* View Mode Toggle */}
+          <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/5">
+            <button
+              onClick={() => setViewMode('dome')}
+              className={cn(
+                "h-6 w-6 rounded-full flex items-center justify-center transition-all",
+                viewMode === 'dome'
+                  ? "bg-pink-500/30 text-pink-400"
+                  : "text-white/40 hover:text-white/60"
+              )}
+            >
+              <LayoutGrid className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={() => setViewMode('sphere')}
+              className={cn(
+                "h-6 w-6 rounded-full flex items-center justify-center transition-all",
+                viewMode === 'sphere'
+                  ? "bg-pink-500/30 text-pink-400"
+                  : "text-white/40 hover:text-white/60"
+              )}
+            >
+              <Globe className="h-3.5 w-3.5" />
+            </button>
+          </div>
+
           <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 hover:bg-red-500/20 transition-colors group"
@@ -286,48 +329,175 @@ export default function CheckedInScreen() {
         </div>
       </div>
 
-      {/* Dome Gallery - ReactBits component */}
-      <div className="absolute -inset-10 scale-125">
-        <DomeGallery
-          images={GALLERY_IMAGES}
-          grayscale={false}
-          fit={1.2}
-          minRadius={300}
-          segments={25}
-          overlayBlurColor="#0a0a0f"
-          imageBorderRadius="50%"
-          autoRotate={true}
-          autoRotateSpeed={0.15}
-          dynamicPresence={true}
-          presenceDuration={[8, 15]}
-          spottedIds={spotted}
-          onImageClick={(item) => {
-            // Find the person data from the clicked image
-            const person = PEOPLE.find(p => p.avatar === item.src);
-            if (person) setSelectedPerson(person);
-          }}
-        />
-      </div>
-
-      {/* Hint text */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center z-20">
-        <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10">
-          <p className="text-white/50 text-xs">
-            Tap on someone to see their profile
-          </p>
-          <button className="h-6 w-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-            <RefreshCw className="h-3 w-3 text-white/50" />
-          </button>
+      {/* View Mode: Dome Gallery */}
+      {viewMode === 'dome' && (
+        <div className="absolute -inset-10 scale-125">
+          <DomeGallery
+            images={GALLERY_IMAGES}
+            grayscale={false}
+            fit={1.2}
+            minRadius={300}
+            segments={25}
+            overlayBlurColor="#0a0a0f"
+            imageBorderRadius="50%"
+            autoRotate={true}
+            autoRotateSpeed={0.15}
+            dynamicPresence={true}
+            presenceDuration={[8, 15]}
+            spottedIds={spotted}
+            onImageClick={(item) => {
+              const person = PEOPLE.find(p => p.avatar === item.src);
+              if (person) setSelectedPerson(person);
+            }}
+          />
         </div>
-      </div>
+      )}
 
-      {/* Profile Card Modal */}
-      <ProfileCard
-        person={selectedPerson}
-        onClose={() => setSelectedPerson(null)}
-        onSpot={handleSpot}
-        isSpotted={selectedPerson ? spotted.includes(selectedPerson.id) : false}
-      />
+      {/* View Mode: 3D Sphere (InfiniteMenu) */}
+      {viewMode === 'sphere' && (
+        <>
+          {/* Sphere takes upper portion */}
+          <div className="absolute inset-x-0 top-0 h-[55%]">
+            <InfiniteMenu
+              items={MENU_ITEMS}
+              scale={1.0}
+              onActiveChange={(index) => setActiveIndex(index)}
+              onMovementChange={setIsMoving}
+            />
+          </div>
+
+          {/* Orb background behind profile info - fades in when focused */}
+          <div
+            className={cn(
+              "absolute inset-x-0 bottom-0 h-[50%] pointer-events-none transition-opacity duration-500",
+              isMoving ? "opacity-0" : "opacity-60"
+            )}
+          >
+            <Orb
+              hoverIntensity={2.03}
+              rotateOnHover={false}
+              forceHoverState={!isMoving}
+              backgroundColor="#0a0a0f"
+            />
+          </div>
+
+          {/* Active Profile Info - Below the sphere */}
+          <div
+            className={cn(
+              "absolute inset-x-0 bottom-0 h-[45%] flex flex-col items-center justify-start pt-4 px-6",
+              "transition-all duration-300",
+              isMoving ? "opacity-30 translate-y-4" : "opacity-100 translate-y-0"
+            )}
+          >
+            {activePerson && (
+              <>
+                {/* Name & Age */}
+                <h2 className="text-white text-2xl font-bold text-center">
+                  {activePerson.name}, {activePerson.age}
+                </h2>
+
+                {/* Bio */}
+                <p className="text-white/50 text-sm mt-2 text-center italic max-w-[280px]">
+                  "{activePerson.bio}"
+                </p>
+
+                {/* Interest pills */}
+                <div className="flex flex-wrap justify-center gap-2 mt-4">
+                  {activePerson.interests?.map((interest) => (
+                    <span
+                      key={interest}
+                      className="px-3 py-1 rounded-full text-xs font-medium bg-white/10 text-white/60 border border-white/10"
+                    >
+                      {interest}
+                    </span>
+                  ))}
+                </div>
+
+                {/* SPOT Button */}
+                <div className="mt-6 w-full max-w-xs">
+                  {isActiveSpotted ? (
+                    <div className="text-center py-3">
+                      <div className="flex items-center justify-center gap-2 text-pink-400">
+                        <Eye className="h-5 w-5" />
+                        <span className="font-medium">You spotted {activePerson.name}</span>
+                      </div>
+                      <p className="text-white/40 text-xs mt-2">
+                        They'll be notified of your interest
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <div
+                        className="relative h-12 rounded-full p-[2px]"
+                        style={{
+                          background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(59, 130, 246), rgb(139, 92, 246), rgb(236, 72, 153))',
+                          backgroundSize: '200% 100%',
+                          animation: 'shimmerBorder 3s linear infinite',
+                        }}
+                      >
+                        <button
+                          onClick={() => handleSpot(activePerson)}
+                          className={cn(
+                            "w-full h-full rounded-full",
+                            "bg-[#0f0f12] text-white text-sm font-semibold",
+                            "flex items-center justify-center gap-2",
+                            "active:scale-[0.98] transition-transform",
+                            "hover:bg-[#1a1a20]"
+                          )}
+                        >
+                          <Eye className="h-4 w-4" />
+                          SPOT {activePerson.name}
+                        </button>
+                      </div>
+                      <p className="text-center text-white/30 text-xs mt-2">
+                        Let them know you're interested
+                      </p>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </>
+      )}
+
+      {/* Hint text - only show for dome view */}
+      {viewMode === 'dome' && (
+        <div className="absolute bottom-8 left-0 right-0 flex justify-center z-20">
+          <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10">
+            <p className="text-white/50 text-xs">
+              Tap on someone to see their profile
+            </p>
+            <button className="h-6 w-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+              <RefreshCw className="h-3 w-3 text-white/50" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Hint text - for sphere view */}
+      {viewMode === 'sphere' && (
+        <div className="absolute bottom-6 left-0 right-0 flex justify-center z-20">
+          <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10">
+            <p className="text-white/50 text-xs">
+              Swipe to browse
+            </p>
+            <button className="h-6 w-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+              <RefreshCw className="h-3 w-3 text-white/50" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Card Modal - only for dome view */}
+      {viewMode === 'dome' && (
+        <ProfileCard
+          person={selectedPerson}
+          onClose={() => setSelectedPerson(null)}
+          onSpot={handleSpot}
+          isSpotted={selectedPerson ? spotted.includes(selectedPerson.id) : false}
+        />
+      )}
 
       {/* CSS for shimmer border animation */}
       <style>{`
