@@ -560,11 +560,15 @@ function VenueCard({ venue, depth = 0 }) {
 }
 
 /**
- * Venue Details Modal - Frosted glass with animated images
+ * Venue Details Modal - Frosted glass with animated images and tilt effect
  */
 function VenueModal({ venue, onClose, onCheckIn }) {
+  const cardRef = React.useRef(null);
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
   const [userCredits] = React.useState(5); // Mock user credits
+  const [tilt, setTilt] = React.useState({ x: 0, y: 0 });
+  const [mousePos, setMousePos] = React.useState({ x: 50, y: 50 });
+  const [isHovering, setIsHovering] = React.useState(false);
 
   // Cycle through images like a gif
   React.useEffect(() => {
@@ -575,6 +579,34 @@ function VenueModal({ venue, onClose, onCheckIn }) {
     return () => clearInterval(interval);
   }, [venue]);
 
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // Calculate tilt based on mouse position from center
+    const rotateX = ((e.clientY - centerY) / (rect.height / 2)) * -12;
+    const rotateY = ((e.clientX - centerX) / (rect.width / 2)) * 12;
+
+    // Calculate mouse position as percentage for light effect
+    const mouseX = ((e.clientX - rect.left) / rect.width) * 100;
+    const mouseY = ((e.clientY - rect.top) / rect.height) * 100;
+
+    setTilt({ x: rotateX, y: rotateY });
+    setMousePos({ x: mouseX, y: mouseY });
+  };
+
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 });
+    setMousePos({ x: 50, y: 50 });
+    setIsHovering(false);
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+
   if (!venue) return null;
 
   const extraPeople = Math.max(0, venue.peopleCount - venue.people.length);
@@ -584,19 +616,55 @@ function VenueModal({ venue, onClose, onCheckIn }) {
     <div className="absolute inset-0 z-50 flex items-center justify-center p-6">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-md"
+        className="absolute inset-0 bg-black/80 backdrop-blur-xl"
         onClick={onClose}
       />
 
-      {/* Modal content - frosted glass, no borders */}
-      <div className="relative w-full max-w-sm bg-white/10 backdrop-blur-2xl rounded-3xl overflow-hidden animate-scale-in">
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 h-8 w-8 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center"
+      {/* Card with tilt effect */}
+      <div
+        ref={cardRef}
+        className="relative w-full max-w-sm animate-scale-in"
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          perspective: '1200px',
+        }}
+      >
+        <div
+          className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl transition-all duration-200 ease-out"
+          style={{
+            background: 'linear-gradient(145deg, rgba(30,30,35,0.9) 0%, rgba(15,15,18,0.95) 100%)',
+            transform: isHovering
+              ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(1.02)`
+              : 'rotateX(0deg) rotateY(0deg) scale(1)',
+            transformStyle: 'preserve-3d',
+          }}
         >
-          <X className="h-4 w-4 text-white/70" />
-        </button>
+          {/* Dynamic light reflection that follows mouse */}
+          <div
+            className="absolute inset-0 pointer-events-none transition-opacity duration-150 z-20"
+            style={{
+              background: `radial-gradient(circle 150px at ${mousePos.x}% ${mousePos.y}%, rgba(255,255,255,0.12) 0%, transparent 100%)`,
+              opacity: isHovering ? 1 : 0,
+            }}
+          />
+
+          {/* Subtle gradient border glow */}
+          <div
+            className="absolute inset-0 pointer-events-none z-10 rounded-3xl transition-opacity duration-300"
+            style={{
+              background: `radial-gradient(circle at ${mousePos.x}% ${mousePos.y}%, rgba(236,72,153,0.15) 0%, transparent 50%)`,
+              opacity: isHovering ? 1 : 0,
+            }}
+          />
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-30 h-8 w-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center hover:bg-black/60 transition-colors"
+          >
+            <X className="h-4 w-4 text-white/70" />
+          </button>
 
         {/* Animated image slideshow */}
         <div className="relative h-48 overflow-hidden">
@@ -711,6 +779,7 @@ function VenueModal({ venue, onClose, onCheckIn }) {
           <p className="text-center text-white/40 text-xs">
             You have <span className="text-white/70 font-medium">{userCredits} credits</span> remaining
           </p>
+        </div>
         </div>
       </div>
     </div>
@@ -865,9 +934,9 @@ export default function HomeScreen() {
           speed="2s"
         >
           <div className={cn(
-            "flex items-center gap-3 px-4 py-3 rounded-2xl",
-            "bg-black/40 backdrop-blur-xl border border-white/10",
-            "hover:bg-black/50 active:bg-black/60 transition-all"
+            "flex items-center gap-3 px-4 py-3 rounded-full",
+            "bg-white/10 backdrop-blur-xl",
+            "hover:bg-white/15 active:bg-white/20 transition-all"
           )}>
             <MapPin className="h-4 w-4 text-pink-400" />
             <span className="flex-1 text-white text-sm font-medium text-left">

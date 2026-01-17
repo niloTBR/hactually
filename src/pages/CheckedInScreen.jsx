@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MapPin, X, Eye, LogOut } from 'lucide-react';
+import { MapPin, X, Eye, LogOut, RefreshCw, LayoutGrid, Globe } from 'lucide-react';
 import { cn } from '../lib/utils';
+import DomeGallery from '../components/DomeGallery';
+import InfiniteMenu from '../components/InfiniteMenu';
 
 // Profile images
 const PROFILE_IMAGES = [
@@ -27,99 +29,18 @@ const PEOPLE = [
   { id: 8, name: 'Alex', age: 29, avatar: PROFILE_IMAGES[7], bio: 'professional overthinker, amateur chef', interests: ['Gaming', 'Crypto', 'Sneakers'] },
 ];
 
-/**
- * Animated Profile Tile - GIF-style changing images
- */
-function AnimatedProfileTile({ people, index, onImageClick }) {
-  const [currentIndex, setCurrentIndex] = React.useState(0);
-
-  // Cycle through people's images like a GIF
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % people.length);
-    }, 1200 + index * 200); // Slightly staggered timing for each tile
-    return () => clearInterval(interval);
-  }, [people.length, index]);
-
-  const currentPerson = people[currentIndex];
-
-  return (
-    <button
-      onClick={() => onImageClick(currentPerson)}
-      className="relative h-28 w-28 rounded-3xl overflow-hidden border-2 border-white/10 shadow-2xl shadow-black/60 hover:border-pink-500/40 hover:scale-105 transition-all duration-300"
-    >
-      {/* Stack all images, fade between them */}
-      {people.map((person, idx) => (
-        <img
-          key={person.id}
-          src={person.avatar}
-          alt=""
-          className={cn(
-            "absolute inset-0 h-full w-full object-cover transition-opacity duration-500",
-            currentIndex === idx ? "opacity-100" : "opacity-0"
-          )}
-          draggable={false}
-        />
-      ))}
-    </button>
-  );
-}
-
-/**
- * Gallery - 3 tiles with GIF-style changing images
- */
-function DomeGallery({ images, onImageClick }) {
-  // Split people into 3 groups for 3 tiles
-  const groups = [
-    images.slice(0, 3),
-    images.slice(3, 6),
-    images.slice(6, 8).concat(images.slice(0, 1)), // Wrap around
-  ];
-
-  return (
-    <div className="relative w-full h-full flex items-center justify-center">
-      {/* 3 animated tiles in a curved arrangement */}
-      <div className="flex items-center gap-4" style={{ perspective: '800px' }}>
-        {groups.map((group, index) => {
-          // Curved positioning
-          const rotateY = (index - 1) * 25; // -25, 0, 25 degrees
-          const translateZ = index === 1 ? 20 : -30;
-          const scale = index === 1 ? 1.1 : 0.95;
-
-          return (
-            <div
-              key={index}
-              style={{
-                transform: `rotateY(${rotateY}deg) translateZ(${translateZ}px) scale(${scale})`,
-                transformStyle: 'preserve-3d',
-              }}
-            >
-              <AnimatedProfileTile
-                people={group}
-                index={index}
-                onImageClick={onImageClick}
-              />
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Subtle radial vignette */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse 70% 50% at 50% 50%, transparent 30%, rgba(10,10,15,0.6) 70%, rgba(10,10,15,0.95) 100%)',
-        }}
-      />
-    </div>
-  );
-}
+// Convert PEOPLE to DomeGallery format with data attached
+const GALLERY_IMAGES = PEOPLE.map(person => ({
+  src: person.avatar,
+  alt: person.name,
+  data: person // Attach full person data
+}));
 
 /**
  * Profile Card with Tilt Effect and Light Reflection
  * Inspired by ReactBits ProfileCard
  */
-function ProfileCard({ person, onClose, onSpot }) {
+function ProfileCard({ person, onClose, onSpot, isSpotted }) {
   const cardRef = React.useRef(null);
   const [tilt, setTilt] = React.useState({ x: 0, y: 0 });
   const [mousePos, setMousePos] = React.useState({ x: 50, y: 50 });
@@ -224,6 +145,13 @@ function ProfileCard({ person, onClose, onSpot }) {
                 background: 'linear-gradient(to bottom, transparent 0%, transparent 30%, rgba(15,15,18,0.4) 50%, rgba(15,15,18,0.85) 75%, rgb(15,15,18) 100%)',
               }}
             />
+            {/* Spotted badge on image */}
+            {isSpotted && (
+              <div className="absolute top-4 left-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 text-white text-xs font-medium">
+                <Eye className="h-3 w-3" />
+                Spotted
+              </div>
+            )}
           </div>
 
           {/* Content area - blends with image fade */}
@@ -254,41 +182,63 @@ function ProfileCard({ person, onClose, onSpot }) {
 
             {/* SPOT Button */}
             <div className="mt-5">
-              <div
-                className="relative h-11 rounded-full p-[1px]"
-                style={{
-                  background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(59, 130, 246), rgb(139, 92, 246), rgb(236, 72, 153))',
-                  backgroundSize: '200% 100%',
-                  animation: 'shimmerBorder 3s linear infinite',
-                }}
-              >
-                <button
-                  onClick={() => onSpot(person)}
-                  className={cn(
-                    "w-full h-full rounded-full",
-                    "bg-[#0f0f12] text-white text-sm font-semibold",
-                    "flex items-center justify-center gap-2",
-                    "active:scale-[0.98] transition-transform",
-                    "hover:bg-[#1a1a20]"
-                  )}
-                >
-                  <Eye className="h-4 w-4" />
-                  SPOT
-                </button>
-              </div>
-              <p className="text-center text-white/30 text-[10px] mt-2">
-                Let them know you're interested
-              </p>
+              {isSpotted ? (
+                <div className="text-center py-3">
+                  <div className="flex items-center justify-center gap-2 text-pink-400">
+                    <Eye className="h-4 w-4" />
+                    <span className="text-sm font-medium">You spotted {person.name}</span>
+                  </div>
+                  <p className="text-white/30 text-[10px] mt-1">
+                    They'll be notified of your interest
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div
+                    className="relative h-11 rounded-full p-[1px]"
+                    style={{
+                      background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(59, 130, 246), rgb(139, 92, 246), rgb(236, 72, 153))',
+                      backgroundSize: '200% 100%',
+                      animation: 'shimmerBorder 3s linear infinite',
+                    }}
+                  >
+                    <button
+                      onClick={() => onSpot(person)}
+                      className={cn(
+                        "w-full h-full rounded-full",
+                        "bg-[#0f0f12] text-white text-sm font-semibold",
+                        "flex items-center justify-center gap-2",
+                        "active:scale-[0.98] transition-transform",
+                        "hover:bg-[#1a1a20]"
+                      )}
+                    >
+                      <Eye className="h-4 w-4" />
+                      SPOT
+                    </button>
+                  </div>
+                  <p className="text-center text-white/30 text-[10px] mt-2">
+                    Let them know you're interested
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* CSS for shimmer border animation */}
+      <style>{`
+        @keyframes shimmerBorder {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
     </div>
   );
 }
 
 /**
- * Checked In Screen
+ * Checked In Screen - Original DomeGallery version
  */
 export default function CheckedInScreen() {
   const navigate = useNavigate();
@@ -304,9 +254,9 @@ export default function CheckedInScreen() {
   };
 
   const handleSpot = (person) => {
-    setSpotted([...spotted, person.id]);
-    setSelectedPerson(null);
-    // Could trigger animation or notification here
+    if (!spotted.includes(person.id)) {
+      setSpotted([...spotted, person.id]);
+    }
   };
 
   return (
@@ -321,37 +271,53 @@ export default function CheckedInScreen() {
 
       {/* Header - Location bar with venue name */}
       <div className="absolute top-0 left-0 right-0 z-30 pt-12 px-4">
-        <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10">
+        <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-white/10 backdrop-blur-xl">
           <MapPin className="h-4 w-4 text-pink-400" />
           <span className="flex-1 text-white text-sm font-medium">
             {venue.name}
           </span>
-          <div className="flex items-center gap-2">
-            <span className="text-white/40 text-xs">Checked in</span>
-            <button
-              onClick={() => navigate(-1)}
-              className="h-7 w-7 rounded-full bg-white/10 flex items-center justify-center hover:bg-red-500/20 hover:text-red-400 transition-colors"
-            >
-              <LogOut className="h-3.5 w-3.5 text-white/60" />
-            </button>
-          </div>
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 hover:bg-red-500/20 transition-colors group"
+          >
+            <span className="text-white/40 text-xs group-hover:text-red-400 transition-colors">Leave venue</span>
+            <LogOut className="h-3.5 w-3.5 text-white/40 group-hover:text-red-400 transition-colors" />
+          </button>
         </div>
       </div>
 
-      {/* Dome Gallery */}
-      <div className="absolute inset-0 pt-28">
+      {/* Dome Gallery - ReactBits component */}
+      <div className="absolute -inset-10 scale-125">
         <DomeGallery
-          images={PEOPLE}
-          onImageClick={(person) => setSelectedPerson(person)}
+          images={GALLERY_IMAGES}
+          grayscale={false}
+          fit={1.2}
+          minRadius={300}
+          segments={25}
+          overlayBlurColor="#0a0a0f"
+          imageBorderRadius="50%"
+          autoRotate={true}
+          autoRotateSpeed={0.15}
+          dynamicPresence={true}
+          presenceDuration={[8, 15]}
+          spottedIds={spotted}
+          onImageClick={(item) => {
+            // Find the person data from the clicked image
+            const person = PEOPLE.find(p => p.avatar === item.src);
+            if (person) setSelectedPerson(person);
+          }}
         />
       </div>
 
       {/* Hint text */}
       <div className="absolute bottom-8 left-0 right-0 flex justify-center z-20">
-        <div className="px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10">
+        <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10">
           <p className="text-white/50 text-xs">
             Tap on someone to see their profile
           </p>
+          <button className="h-6 w-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+            <RefreshCw className="h-3 w-3 text-white/50" />
+          </button>
         </div>
       </div>
 
@@ -360,6 +326,7 @@ export default function CheckedInScreen() {
         person={selectedPerson}
         onClose={() => setSelectedPerson(null)}
         onSpot={handleSpot}
+        isSpotted={selectedPerson ? spotted.includes(selectedPerson.id) : false}
       />
 
       {/* CSS for shimmer border animation */}
