@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MapPin, X, Eye, ChevronLeft } from 'lucide-react';
+import { MapPin, X, Eye, LogOut } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 // Profile images
@@ -15,120 +15,100 @@ const PROFILE_IMAGES = [
   '/images/arrul-lin-sYhUhse5uT8-unsplash.jpg',
 ];
 
-// Mock people data
+// Mock people data with Twitter-style bios and interests
 const PEOPLE = [
-  { id: 1, name: 'Sophia', age: 24, avatar: PROFILE_IMAGES[0], bio: 'Love exploring new places' },
-  { id: 2, name: 'Emma', age: 26, avatar: PROFILE_IMAGES[1], bio: 'Coffee enthusiast' },
-  { id: 3, name: 'Marcus', age: 28, avatar: PROFILE_IMAGES[2], bio: 'Music & vibes' },
-  { id: 4, name: 'Isabella', age: 23, avatar: PROFILE_IMAGES[3], bio: 'Adventure seeker' },
-  { id: 5, name: 'Luna', age: 25, avatar: PROFILE_IMAGES[4], bio: 'Sunset lover' },
-  { id: 6, name: 'Jake', age: 27, avatar: PROFILE_IMAGES[5], bio: 'Living the dream' },
-  { id: 7, name: 'Mia', age: 24, avatar: PROFILE_IMAGES[6], bio: 'Foodie at heart' },
-  { id: 8, name: 'Alex', age: 29, avatar: PROFILE_IMAGES[7], bio: 'Night owl' },
+  { id: 1, name: 'Sophia', age: 24, avatar: PROFILE_IMAGES[0], bio: 'chasing sunsets & good conversations', interests: ['Travel', 'Wine', 'Art'] },
+  { id: 2, name: 'Emma', age: 26, avatar: PROFILE_IMAGES[1], bio: 'probably at a coffee shop right now', interests: ['Coffee', 'Books', 'Yoga'] },
+  { id: 3, name: 'Marcus', age: 28, avatar: PROFILE_IMAGES[2], bio: 'music producer by day, dj by night', interests: ['Music', 'Vinyl', 'Tech'] },
+  { id: 4, name: 'Isabella', age: 23, avatar: PROFILE_IMAGES[3], bio: 'life is short, eat the dessert first', interests: ['Food', 'Dance', 'Fashion'] },
+  { id: 5, name: 'Luna', age: 25, avatar: PROFILE_IMAGES[4], bio: 'somewhere between chaos and calm', interests: ['Meditation', 'Surf', 'Photography'] },
+  { id: 6, name: 'Jake', age: 27, avatar: PROFILE_IMAGES[5], bio: 'building things & breaking boundaries', interests: ['Startups', 'Fitness', 'Cars'] },
+  { id: 7, name: 'Mia', age: 24, avatar: PROFILE_IMAGES[6], bio: 'finding magic in the mundane', interests: ['Film', 'Cooking', 'Plants'] },
+  { id: 8, name: 'Alex', age: 29, avatar: PROFILE_IMAGES[7], bio: 'professional overthinker, amateur chef', interests: ['Gaming', 'Crypto', 'Sneakers'] },
 ];
 
 /**
- * Dome Gallery - Auto-scrolling 3D dome of profile images
- * Based on ReactBits DomeGallery concept
+ * Animated Profile Tile - GIF-style changing images
  */
-function DomeGallery({ images, onImageClick }) {
-  const containerRef = React.useRef(null);
-  const [rotation, setRotation] = React.useState(0);
-  const [isDragging, setIsDragging] = React.useState(false);
-  const dragStart = React.useRef({ x: 0, rotation: 0 });
+function AnimatedProfileTile({ people, index, onImageClick }) {
+  const [currentIndex, setCurrentIndex] = React.useState(0);
 
-  // Auto-rotate
+  // Cycle through people's images like a GIF
   React.useEffect(() => {
-    if (isDragging) return;
     const interval = setInterval(() => {
-      setRotation((prev) => (prev + 0.3) % 360);
-    }, 50);
+      setCurrentIndex((prev) => (prev + 1) % people.length);
+    }, 1200 + index * 200); // Slightly staggered timing for each tile
     return () => clearInterval(interval);
-  }, [isDragging]);
+  }, [people.length, index]);
 
-  // Mouse/touch drag
-  const handlePointerDown = (e) => {
-    setIsDragging(true);
-    dragStart.current = { x: e.clientX, rotation };
-  };
-
-  const handlePointerMove = (e) => {
-    if (!isDragging) return;
-    const delta = (e.clientX - dragStart.current.x) * 0.5;
-    setRotation((dragStart.current.rotation + delta) % 360);
-  };
-
-  const handlePointerUp = () => {
-    setIsDragging(false);
-  };
-
-  // Calculate positions on a dome/sphere
-  const getPosition = (index, total) => {
-    const theta = ((index / total) * 360 + rotation) * (Math.PI / 180);
-    const phi = Math.PI / 2.5; // Dome angle
-    const radius = 280;
-
-    const x = radius * Math.sin(phi) * Math.cos(theta);
-    const z = radius * Math.sin(phi) * Math.sin(theta) - 100;
-    const y = radius * Math.cos(phi) - 150;
-
-    // Scale based on z position (closer = bigger)
-    const scale = Math.max(0.4, Math.min(1.2, (z + 300) / 400));
-    const opacity = Math.max(0.3, Math.min(1, (z + 300) / 350));
-    const zIndex = Math.round(z + 300);
-
-    return { x, y, z, scale, opacity, zIndex };
-  };
-
-  // Triple the images for seamless rotation
-  const displayImages = [...images, ...images, ...images];
+  const currentPerson = people[currentIndex];
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-full overflow-hidden"
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerLeave={handlePointerUp}
-      style={{ touchAction: 'none', cursor: isDragging ? 'grabbing' : 'grab' }}
+    <button
+      onClick={() => onImageClick(currentPerson)}
+      className="relative h-28 w-28 rounded-3xl overflow-hidden border-2 border-white/10 shadow-2xl shadow-black/60 hover:border-pink-500/40 hover:scale-105 transition-all duration-300"
     >
-      {/* Center point */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-0 h-0">
-        {displayImages.map((person, index) => {
-          const pos = getPosition(index, displayImages.length);
+      {/* Stack all images, fade between them */}
+      {people.map((person, idx) => (
+        <img
+          key={person.id}
+          src={person.avatar}
+          alt=""
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover transition-opacity duration-500",
+            currentIndex === idx ? "opacity-100" : "opacity-0"
+          )}
+          draggable={false}
+        />
+      ))}
+    </button>
+  );
+}
+
+/**
+ * Gallery - 3 tiles with GIF-style changing images
+ */
+function DomeGallery({ images, onImageClick }) {
+  // Split people into 3 groups for 3 tiles
+  const groups = [
+    images.slice(0, 3),
+    images.slice(3, 6),
+    images.slice(6, 8).concat(images.slice(0, 1)), // Wrap around
+  ];
+
+  return (
+    <div className="relative w-full h-full flex items-center justify-center">
+      {/* 3 animated tiles in a curved arrangement */}
+      <div className="flex items-center gap-4" style={{ perspective: '800px' }}>
+        {groups.map((group, index) => {
+          // Curved positioning
+          const rotateY = (index - 1) * 25; // -25, 0, 25 degrees
+          const translateZ = index === 1 ? 20 : -30;
+          const scale = index === 1 ? 1.1 : 0.95;
+
           return (
-            <button
-              key={`${person.id}-${index}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                onImageClick(PEOPLE.find(p => p.avatar === person.avatar) || person);
-              }}
-              className="absolute transition-all duration-100 ease-out"
+            <div
+              key={index}
               style={{
-                transform: `translate3d(${pos.x}px, ${pos.y}px, ${pos.z}px) scale(${pos.scale})`,
-                opacity: pos.opacity,
-                zIndex: pos.zIndex,
+                transform: `rotateY(${rotateY}deg) translateZ(${translateZ}px) scale(${scale})`,
+                transformStyle: 'preserve-3d',
               }}
             >
-              <div className="h-20 w-20 rounded-2xl overflow-hidden border-2 border-white/20 shadow-xl shadow-black/50 hover:border-pink-500/50 transition-colors">
-                <img
-                  src={person.avatar}
-                  alt=""
-                  className="h-full w-full object-cover"
-                  draggable={false}
-                />
-              </div>
-            </button>
+              <AnimatedProfileTile
+                people={group}
+                index={index}
+                onImageClick={onImageClick}
+              />
+            </div>
           );
         })}
       </div>
 
-      {/* Radial gradient overlay for dome effect */}
+      {/* Subtle radial vignette */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 50% 50%, transparent 30%, rgba(10,10,15,0.8) 70%, rgba(10,10,15,1) 100%)',
+          background: 'radial-gradient(ellipse 70% 50% at 50% 50%, transparent 30%, rgba(10,10,15,0.6) 70%, rgba(10,10,15,0.95) 100%)',
         }}
       />
     </div>
@@ -136,11 +116,13 @@ function DomeGallery({ images, onImageClick }) {
 }
 
 /**
- * Profile Card with Tilt Effect on hover
+ * Profile Card with Tilt Effect and Light Reflection
+ * Inspired by ReactBits ProfileCard
  */
 function ProfileCard({ person, onClose, onSpot }) {
   const cardRef = React.useRef(null);
   const [tilt, setTilt] = React.useState({ x: 0, y: 0 });
+  const [mousePos, setMousePos] = React.useState({ x: 50, y: 50 });
   const [isHovering, setIsHovering] = React.useState(false);
 
   const handleMouseMove = (e) => {
@@ -150,14 +132,20 @@ function ProfileCard({ person, onClose, onSpot }) {
     const centerY = rect.top + rect.height / 2;
 
     // Calculate tilt based on mouse position from center
-    const rotateX = ((e.clientY - centerY) / (rect.height / 2)) * -15;
-    const rotateY = ((e.clientX - centerX) / (rect.width / 2)) * 15;
+    const rotateX = ((e.clientY - centerY) / (rect.height / 2)) * -12;
+    const rotateY = ((e.clientX - centerX) / (rect.width / 2)) * 12;
+
+    // Calculate mouse position as percentage for light effect
+    const mouseX = ((e.clientX - rect.left) / rect.width) * 100;
+    const mouseY = ((e.clientY - rect.top) / rect.height) * 100;
 
     setTilt({ x: rotateX, y: rotateY });
+    setMousePos({ x: mouseX, y: mouseY });
   };
 
   const handleMouseLeave = () => {
     setTilt({ x: 0, y: 0 });
+    setMousePos({ x: 50, y: 50 });
     setIsHovering(false);
   };
 
@@ -183,23 +171,33 @@ function ProfileCard({ person, onClose, onSpot }) {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{
-          perspective: '1000px',
+          perspective: '1200px',
         }}
       >
         <div
-          className="relative bg-gradient-to-b from-white/15 to-white/5 backdrop-blur-2xl rounded-3xl overflow-hidden border border-white/10 shadow-2xl transition-transform duration-200 ease-out"
+          className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl transition-all duration-200 ease-out"
           style={{
+            background: 'linear-gradient(145deg, rgba(30,30,35,0.9) 0%, rgba(15,15,18,0.95) 100%)',
             transform: isHovering
               ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(1.02)`
               : 'rotateX(0deg) rotateY(0deg) scale(1)',
             transformStyle: 'preserve-3d',
           }}
         >
-          {/* Shine effect on hover */}
+          {/* Dynamic light reflection that follows mouse */}
           <div
-            className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+            className="absolute inset-0 pointer-events-none transition-opacity duration-150 z-20"
             style={{
-              background: `radial-gradient(circle at ${50 + tilt.y * 2}% ${50 + tilt.x * 2}%, rgba(255,255,255,0.15) 0%, transparent 50%)`,
+              background: `radial-gradient(circle 150px at ${mousePos.x}% ${mousePos.y}%, rgba(255,255,255,0.12) 0%, transparent 100%)`,
+              opacity: isHovering ? 1 : 0,
+            }}
+          />
+
+          {/* Subtle gradient border glow */}
+          <div
+            className="absolute inset-0 pointer-events-none z-10 rounded-3xl transition-opacity duration-300"
+            style={{
+              background: `radial-gradient(circle at ${mousePos.x}% ${mousePos.y}%, rgba(236,72,153,0.15) 0%, transparent 50%)`,
               opacity: isHovering ? 1 : 0,
             }}
           />
@@ -207,61 +205,81 @@ function ProfileCard({ person, onClose, onSpot }) {
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-10 h-8 w-8 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center hover:bg-black/50 transition-colors"
+            className="absolute top-4 right-4 z-30 h-8 w-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center hover:bg-black/60 transition-colors"
           >
             <X className="h-4 w-4 text-white/70" />
           </button>
 
-          {/* Profile image */}
-          <div className="relative h-72 overflow-hidden">
+          {/* Profile image with smooth fade into card */}
+          <div className="relative h-64 overflow-hidden">
             <img
               src={person.avatar}
               alt={person.name}
               className="h-full w-full object-cover"
             />
+            {/* Smooth gradient fade into card background */}
             <div
               className="absolute inset-0"
               style={{
-                background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%)',
+                background: 'linear-gradient(to bottom, transparent 0%, transparent 30%, rgba(15,15,18,0.4) 50%, rgba(15,15,18,0.85) 75%, rgb(15,15,18) 100%)',
               }}
             />
-
-            {/* Name overlay */}
-            <div className="absolute bottom-4 left-5 right-5">
-              <h2 className="text-white text-2xl font-bold">
-                {person.name}, {person.age}
-              </h2>
-              <p className="text-white/60 text-sm mt-1">{person.bio}</p>
-            </div>
           </div>
 
-          {/* SPOT Button */}
-          <div className="p-5">
-            <div
-              className="relative h-12 rounded-full p-[1px]"
-              style={{
-                background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(59, 130, 246), rgb(139, 92, 246), rgb(236, 72, 153))',
-                backgroundSize: '200% 100%',
-                animation: 'shimmerBorder 3s linear infinite',
-              }}
-            >
-              <button
-                onClick={() => onSpot(person)}
-                className={cn(
-                  "w-full h-full rounded-full",
-                  "bg-[#0f0f12] text-white text-sm font-semibold",
-                  "flex items-center justify-center gap-2",
-                  "active:scale-[0.98] transition-transform",
-                  "hover:bg-[#1a1a20]"
-                )}
-              >
-                <Eye className="h-4 w-4" />
-                SPOT
-              </button>
-            </div>
-            <p className="text-center text-white/40 text-xs mt-3">
-              Let them know you're interested
+          {/* Content area - blends with image fade */}
+          <div className="px-5 pb-5 -mt-16 relative z-10">
+            {/* Name & Age */}
+            <h2 className="text-white text-2xl font-bold">
+              {person.name}, {person.age}
+            </h2>
+
+            {/* Twitter-style bio */}
+            <p className="text-white/50 text-sm mt-1 italic">
+              "{person.bio}"
             </p>
+
+            {/* Interest pills - tiny & elegant */}
+            {person.interests && (
+              <div className="flex flex-wrap gap-1.5 mt-3">
+                {person.interests.map((interest) => (
+                  <span
+                    key={interest}
+                    className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-white/5 text-white/40 border border-white/10"
+                  >
+                    {interest}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* SPOT Button */}
+            <div className="mt-5">
+              <div
+                className="relative h-11 rounded-full p-[1px]"
+                style={{
+                  background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(59, 130, 246), rgb(139, 92, 246), rgb(236, 72, 153))',
+                  backgroundSize: '200% 100%',
+                  animation: 'shimmerBorder 3s linear infinite',
+                }}
+              >
+                <button
+                  onClick={() => onSpot(person)}
+                  className={cn(
+                    "w-full h-full rounded-full",
+                    "bg-[#0f0f12] text-white text-sm font-semibold",
+                    "flex items-center justify-center gap-2",
+                    "active:scale-[0.98] transition-transform",
+                    "hover:bg-[#1a1a20]"
+                  )}
+                >
+                  <Eye className="h-4 w-4" />
+                  SPOT
+                </button>
+              </div>
+              <p className="text-center text-white/30 text-[10px] mt-2">
+                Let them know you're interested
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -304,17 +322,19 @@ export default function CheckedInScreen() {
       {/* Header - Location bar with venue name */}
       <div className="absolute top-0 left-0 right-0 z-30 pt-12 px-4">
         <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10">
-          <button
-            onClick={() => navigate(-1)}
-            className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4 text-white" />
-          </button>
           <MapPin className="h-4 w-4 text-pink-400" />
           <span className="flex-1 text-white text-sm font-medium">
             {venue.name}
           </span>
-          <span className="text-white/40 text-xs">Checked in</span>
+          <div className="flex items-center gap-2">
+            <span className="text-white/40 text-xs">Checked in</span>
+            <button
+              onClick={() => navigate(-1)}
+              className="h-7 w-7 rounded-full bg-white/10 flex items-center justify-center hover:bg-red-500/20 hover:text-red-400 transition-colors"
+            >
+              <LogOut className="h-3.5 w-3.5 text-white/60" />
+            </button>
+          </div>
         </div>
       </div>
 
