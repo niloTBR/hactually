@@ -560,97 +560,138 @@ function VenueCard({ venue, depth = 0 }) {
 }
 
 /**
- * Venue Details Modal
+ * Venue Details Modal - Frosted glass with animated images
  */
 function VenueModal({ venue, onClose }) {
+  const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+  const [userCredits] = React.useState(5); // Mock user credits
+
+  // Cycle through images like a gif
+  React.useEffect(() => {
+    if (!venue) return;
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % VENUE_IMAGES.length);
+    }, 1500); // Change image every 1.5s
+    return () => clearInterval(interval);
+  }, [venue]);
+
   if (!venue) return null;
+
   const extraPeople = Math.max(0, venue.peopleCount - venue.people.length);
+  const checkInCost = 1; // Credits needed to check in
 
   return (
-    <div className="absolute inset-0 z-50 flex items-end justify-center">
+    <div className="absolute inset-0 z-50 flex items-center justify-center p-6">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/70 backdrop-blur-md"
         onClick={onClose}
       />
 
-      {/* Modal content */}
-      <div className="relative w-full max-h-[85%] bg-[#1c1c1e] rounded-t-3xl overflow-hidden animate-slide-in-up">
-        {/* Handle bar */}
-        <div className="flex justify-center pt-3 pb-2">
-          <div className="w-10 h-1 rounded-full bg-white/20" />
-        </div>
+      {/* Modal content - frosted glass, no borders */}
+      <div className="relative w-full max-w-sm bg-white/10 backdrop-blur-2xl rounded-3xl overflow-hidden animate-scale-in">
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 h-8 w-8 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center"
+        >
+          <X className="h-4 w-4 text-white/70" />
+        </button>
 
-        {/* Header image */}
-        <div className="relative h-36 bg-gradient-to-br from-purple-900/80 to-pink-900/80">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <MapPin className="h-12 w-12 text-white/20" />
+        {/* Animated image slideshow */}
+        <div className="relative h-48 overflow-hidden">
+          {VENUE_IMAGES.slice(0, 4).map((img, idx) => (
+            <div
+              key={idx}
+              className={cn(
+                "absolute inset-0 transition-opacity duration-500",
+                currentImageIndex % 4 === idx ? "opacity-100" : "opacity-0"
+              )}
+            >
+              <img
+                src={img}
+                alt=""
+                className="h-full w-full object-cover"
+              />
+            </div>
+          ))}
+          {/* Gradient overlay for text readability */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: 'linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.8) 100%)',
+            }}
+          />
+          {/* Image indicators */}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+            {[0, 1, 2, 3].map((idx) => (
+              <div
+                key={idx}
+                className={cn(
+                  "h-1 rounded-full transition-all duration-300",
+                  currentImageIndex % 4 === idx
+                    ? "w-4 bg-white"
+                    : "w-1 bg-white/40"
+                )}
+              />
+            ))}
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-5 space-y-5">
-          {/* Title & Info */}
-          <div>
-            <h2 className="text-2xl font-bold text-white">{venue.name}</h2>
-            <p className="text-white/50 text-sm mt-1">{venue.type} · {venue.area}, Dubai</p>
+        <div className="p-5 space-y-4">
+          {/* Venue name & distance */}
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-white">{venue.name}</h2>
+              <p className="text-white/50 text-sm">{venue.type} · {venue.area}</p>
+            </div>
+            <div className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md">
+              <span className="text-white/90 text-sm font-medium">{venue.distance}</span>
+            </div>
           </div>
 
-          {/* Stats row */}
+          {/* People avatars */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5">
-              <span className="text-white text-sm font-medium">{venue.peopleCount} people here</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5">
-              <Clock className="h-4 w-4 text-white/40" />
-              <span className="text-white/60 text-sm">Open now</span>
-            </div>
-          </div>
-
-          {/* People here */}
-          <div>
-            <h3 className="text-white/60 text-xs font-medium uppercase tracking-wider mb-3">
-              People Here
-            </h3>
-            <div className="flex items-center">
-              {venue.people.map((person, idx) => (
+            <div className="flex flex-shrink-0">
+              {venue.people.slice(0, 3).map((person, idx) => (
                 <div
                   key={person.id}
                   className={cn(
-                    "h-12 w-12 rounded-full border border-white/10 overflow-hidden",
-                    idx > 0 && "-ml-5"
+                    "h-10 w-10 rounded-full border border-white/20 overflow-hidden",
+                    "shadow-lg shadow-black/20",
+                    idx > 0 && "-ml-4"
                   )}
                 >
                   <img src={person.avatar} alt="" className="h-full w-full object-cover" />
                 </div>
               ))}
-              {extraPeople > 0 && (
-                <div className="relative h-12 w-12 -ml-5">
-                  {/* Spinning gradient border */}
-                  <div
-                    className="absolute inset-0 rounded-full animate-spin"
-                    style={{
-                      background: 'conic-gradient(from 0deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(236, 72, 153), rgb(139, 92, 246), rgb(236, 72, 153))',
-                      animationDuration: '3s',
-                    }}
-                  />
-                  <div className="absolute inset-[1px] rounded-full bg-[#1c1c1e] flex items-center justify-center text-sm font-bold text-white">
-                    +{extraPeople}
-                  </div>
-                </div>
-              )}
+              {extraPeople > 0 && <AnimatedBadge count={extraPeople} size="lg" />}
             </div>
+            <span className="text-white/60 text-sm">{venue.peopleCount} people here</span>
+          </div>
+
+          {/* Happening message */}
+          <div className="text-center py-2">
+            <p className="text-white/80 text-base font-medium">
+              It's already happening inside ✨
+            </p>
           </div>
 
           {/* Check In Button */}
           <button className={cn(
             "w-full py-4 rounded-2xl font-semibold text-white",
             "bg-gradient-to-r from-pink-500 to-purple-600",
-            "shadow-lg shadow-pink-500/25",
+            "shadow-lg shadow-pink-500/30",
             "active:scale-[0.98] transition-transform"
           )}>
-            Check In Here
+            Check In · {checkInCost} credit
           </button>
+
+          {/* Credits remaining */}
+          <p className="text-center text-white/40 text-xs">
+            You have <span className="text-white/70 font-medium">{userCredits} credits</span> remaining
+          </p>
         </div>
       </div>
     </div>
