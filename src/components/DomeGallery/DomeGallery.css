@@ -291,3 +291,20 @@ main.sphere-main {
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
+
+/* Focused item - increased padding creates margin around the circle */
+.item.is-focused {
+  z-index: 100;
+}
+
+.item.is-focused .item__image {
+  inset: 35%;
+  transition: inset 400ms ease-out;
+  box-shadow: 0 0 40px rgba(236, 72, 153, 0.5), 0 0 80px rgba(139, 92, 246, 0.3);
+}
+
+/* When gallery has focus, slightly dim non-focused items */
+.sphere-root.has-focus .item:not(.is-focused) .item__image {
+  opacity: 0.6;
+  transition: opacity 400ms ease-out;
+}

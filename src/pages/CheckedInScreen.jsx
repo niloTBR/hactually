@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MapPin, X, Eye, LogOut, RefreshCw, LayoutGrid, Globe } from 'lucide-react';
+import { MapPin, X, Eye, LogOut, RefreshCw } from 'lucide-react';
 import { cn } from '../lib/utils';
 import DomeGallery from '../components/DomeGallery';
 
@@ -286,6 +286,7 @@ export default function CheckedInScreen() {
         }}
       />
 
+
       {/* Header - Location bar with venue name */}
       <div className="absolute top-0 left-0 right-0 z-30 pt-12 px-4">
         <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-white/10 backdrop-blur-xl">
@@ -294,39 +295,11 @@ export default function CheckedInScreen() {
             {venue.name}
           </span>
 
-          {/* View Mode Toggle */}
-          <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/5">
-            <button
-              onClick={() => setViewMode('dome')}
-              className={cn(
-                "h-6 w-6 rounded-full flex items-center justify-center transition-all",
-                viewMode === 'dome'
-                  ? "bg-pink-500/30 text-pink-400"
-                  : "text-white/40 hover:text-white/60"
-              )}
-              title="Grid view"
-            >
-              <LayoutGrid className="h-3.5 w-3.5" />
-            </button>
-            <button
-              onClick={() => setViewMode('sphere')}
-              className={cn(
-                "h-6 w-6 rounded-full flex items-center justify-center transition-all",
-                viewMode === 'sphere'
-                  ? "bg-pink-500/30 text-pink-400"
-                  : "text-white/40 hover:text-white/60"
-              )}
-              title="3D sphere view"
-            >
-              <Globe className="h-3.5 w-3.5" />
-            </button>
-          </div>
-
           <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 hover:bg-red-500/20 transition-colors group"
           >
-            <span className="text-white/40 text-xs group-hover:text-red-400 transition-colors">Leave venue</span>
+            <span className="text-white/40 text-xs group-hover:text-red-400 transition-colors">Leave</span>
             <LogOut className="h-3.5 w-3.5 text-white/40 group-hover:text-red-400 transition-colors" />
           </button>
         </div>
@@ -343,14 +316,17 @@ export default function CheckedInScreen() {
             segments={25}
             overlayBlurColor="#0a0a0f"
             imageBorderRadius="50%"
-            autoRotate={true}
+            autoRotate={!selectedPerson}
             autoRotateSpeed={0.15}
             dynamicPresence={true}
             presenceDuration={[8, 15]}
             spottedIds={spotted}
+            focusedImage={selectedPerson?.avatar}
             onImageClick={(item) => {
               const person = PEOPLE.find(p => p.avatar === item.src);
-              if (person) setSelectedPerson(person);
+              if (person) {
+                setSelectedPerson(prev => prev?.id === person.id ? null : person);
+              }
             }}
           />
         </div>
@@ -453,17 +429,49 @@ export default function CheckedInScreen() {
         </React.Suspense>
       )}
 
-      {/* Hint text - for dome view */}
+      {/* Bottom section - hint or selected person info */}
       {viewMode === 'dome' && (
-        <div className="absolute bottom-8 left-0 right-0 flex justify-center z-20">
-          <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10">
-            <p className="text-white/50 text-xs">
-              Tap on someone to see their profile
-            </p>
-            <button className="h-6 w-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-              <RefreshCw className="h-3 w-3 text-white/50" />
-            </button>
-          </div>
+        <div className="absolute bottom-0 left-0 right-0 z-20">
+          {selectedPerson ? (
+            <div className="px-6 pb-8 pt-4 text-center">
+              <h2 className="text-white text-xl font-bold">
+                {selectedPerson.name}, {selectedPerson.age}
+              </h2>
+              <p className="text-white/50 text-sm mt-1 italic">
+                "{selectedPerson.bio}"
+              </p>
+              <div className="flex flex-wrap justify-center gap-2 mt-3">
+                {selectedPerson.interests?.map((interest) => (
+                  <span
+                    key={interest}
+                    className="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-white/10 text-white/50 border border-white/10"
+                  >
+                    {interest}
+                  </span>
+                ))}
+              </div>
+              {!spotted.includes(selectedPerson.id) ? (
+                <button
+                  onClick={() => handleSpot(selectedPerson)}
+                  className="mt-4 px-6 py-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white text-sm font-semibold"
+                >
+                  <Eye className="h-4 w-4 inline mr-2" />
+                  SPOT
+                </button>
+              ) : (
+                <div className="mt-3 flex items-center justify-center gap-2 text-pink-400">
+                  <Eye className="h-4 w-4" />
+                  <span className="text-sm">Spotted</span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex justify-center pb-8">
+              <div className="px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10">
+                <p className="text-white/50 text-xs">Tap on someone to see their profile</p>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -479,16 +487,6 @@ export default function CheckedInScreen() {
             </button>
           </div>
         </div>
-      )}
-
-      {/* Profile Card Modal - only for dome view */}
-      {viewMode === 'dome' && (
-        <ProfileCard
-          person={selectedPerson}
-          onClose={() => setSelectedPerson(null)}
-          onSpot={handleSpot}
-          isSpotted={selectedPerson ? spotted.includes(selectedPerson.id) : false}
-        />
       )}
 
       {/* CSS for shimmer border animation */}

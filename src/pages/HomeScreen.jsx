@@ -18,6 +18,7 @@ import {
 import { useAuthStore } from '../store/authStore';
 import { cn } from '../lib/utils';
 import StarBorder from '../components/StarBorder';
+import Orb from '../components/Orb';
 
 // Mapbox access token - replace with your own or set via env variable
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
@@ -241,14 +242,43 @@ function LocationSearchDropdown({ isOpen, onClose, onSelect, searchQuery, setSea
 }
 
 /**
+ * User's marker with Orb effect - fixed in center of screen
+ */
+function UserOrbMarker({ userImage }) {
+  return (
+    <div className="relative w-64 h-64 flex items-center justify-center">
+      {/* Orb effect container - full size of parent */}
+      <div className="absolute inset-0 z-0">
+        <Orb
+          hue={320}
+          hoverIntensity={0.2}
+          rotateOnHover={true}
+          forceHoverState={true}
+          backgroundColor="#000000"
+        />
+      </div>
+      {/* User avatar in center */}
+      <div className="relative z-10 h-14 w-14 rounded-full border-2 border-white/40 overflow-hidden shadow-xl shadow-purple-500/50">
+        <img
+          src={userImage || '/images/ayo-ogunseinde-6W4F62sN_yI-unsplash.jpg'}
+          alt="You"
+          className="h-full w-full object-cover"
+        />
+      </div>
+    </div>
+  );
+}
+
+/**
  * Interactive Mapbox Map with dark style
  */
 function InteractiveMap({ venues, onVenueClick, selectedVenue }) {
+  // Center on DIFC Dubai
   const [viewState, setViewState] = React.useState({
-    longitude: 55.2708, // DIFC center
+    longitude: 55.2708,
     latitude: 25.2048,
-    zoom: 12,
-    pitch: 45, // Slight 3D tilt
+    zoom: 13,
+    pitch: 0,
     bearing: 0,
   });
 
@@ -289,6 +319,11 @@ function InteractiveMap({ venues, onVenueClick, selectedVenue }) {
           `,
         }}
       />
+
+      {/* User orb - always fixed in center of screen */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
+        <UserOrbMarker />
+      </div>
     </div>
   );
 }

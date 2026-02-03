@@ -1,205 +1,199 @@
 /**
  * ============================================================================
- * HACTUALLY DESIGN SYSTEM - DESIGN TOKENS
+ * HACTUALLY 2.0 DESIGN SYSTEM - DESIGN TOKENS
  * ============================================================================
  *
- * A dark, gradient-rich design system for a location-based dating app.
- * Inspired by nightlife aesthetics with vibrant accent colors.
+ * A light, warm design system with organic, approachable tones.
+ * Features the Ezra typeface and a softer, more inviting aesthetic.
  *
  * Color Philosophy:
- * - Deep purple/plum backgrounds create an intimate, nightlife atmosphere
- * - Hot pink/magenta as primary accent for energy and passion
- * - Cyan/teal as secondary for trust and coolness
- * - Orange for high-energy actions (Superspot, urgent CTAs)
- * - Rich gradients throughout for modern, premium feel
- *
- * Mobile-First:
- * - Touch-friendly sizing (min 44px touch targets)
- * - Optimized for gesture-based interactions
- * - High contrast for outdoor visibility
+ * - Cream/Sand backgrounds for warmth and approachability
+ * - Periwinkle as the primary brand color - trustworthy and calm
+ * - Coral/Terracotta for energy and warmth
+ * - Sage green for nature and balance
+ * - Olive/Teal for grounding elements
  */
+
+@import './fonts.css';
 
 :root {
   /* ==========================================================================
      BRAND COLORS
      ========================================================================== */
 
-  /* Primary Purple - The foundation of our dark theme */
-  --purple-950: #0D0612;     /* Deepest - near black */
-  --purple-900: #1A0D24;     /* App background */
-  --purple-850: #231335;     /* Elevated surfaces */
-  --purple-800: #2D1B45;     /* Cards, modals */
-  --purple-700: #3D2660;     /* Active states */
-  --purple-600: #4E3180;     /* Borders, dividers */
-  --purple-500: #6B42A8;     /* Muted text on dark */
-  --purple-400: #8B5FD4;     /* Secondary text */
-  --purple-300: #A882E8;     /* Placeholder text */
-  --purple-200: #C4A8F2;     /* Disabled states */
-  --purple-100: #E0D0FA;     /* Light accents */
-  --purple-50:  #F3EBFF;     /* Lightest */
+  /* Primary - Periwinkle/Lavender Blue */
+  --periwinkle-50: #F0F2F8;
+  --periwinkle-100: #E1E5F1;
+  --periwinkle-200: #C7CEDF;
+  --periwinkle-300: #A9B4CD;
+  --periwinkle-400: #8B9ABB;
+  --periwinkle-500: #6B74A8;
+  --periwinkle-600: #5A6391;
+  --periwinkle-700: #4A527A;
+  --periwinkle-800: #3B4162;
+  --periwinkle-900: #2C314A;
+  --periwinkle-950: #1D2033;
 
-  /* Primary Accent - Hot Pink/Magenta */
-  --pink-950: #2D0A1E;
-  --pink-900: #4A1033;
-  --pink-800: #6B1548;
-  --pink-700: #8C1A5D;
-  --pink-600: #B82073;       /* Dark variant */
-  --pink-500: #E91E8C;       /* PRIMARY BRAND COLOR */
-  --pink-400: #F04DA3;       /* Hover state */
-  --pink-300: #F57DBA;       /* Active/pressed */
-  --pink-200: #FAADD4;       /* Light variant */
-  --pink-100: #FDD6EA;       /* Subtle backgrounds */
-  --pink-50:  #FFF0F7;       /* Lightest */
+  /* Secondary - Coral/Terracotta */
+  --coral-50: #FEF4F2;
+  --coral-100: #FCE8E4;
+  --coral-200: #FAD4CD;
+  --coral-300: #F5B5A8;
+  --coral-400: #ED8F7D;
+  --coral-500: #E07B67;
+  --coral-600: #D45A45;
+  --coral-700: #B24435;
+  --coral-800: #93392D;
+  --coral-900: #7A332A;
+  --coral-950: #421712;
 
-  /* Secondary Accent - Cyan/Teal */
-  --cyan-950: #042F2E;
-  --cyan-900: #083F3E;
-  --cyan-800: #0D5654;
-  --cyan-700: #0F766E;
-  --cyan-600: #14968D;       /* Dark variant */
-  --cyan-500: #20C9BC;       /* SECONDARY BRAND COLOR */
-  --cyan-400: #4DD9CE;       /* Hover state */
-  --cyan-300: #7AE4DC;       /* Light variant */
-  --cyan-200: #A7EFEA;
-  --cyan-100: #D4F9F6;
-  --cyan-50:  #ECFFFE;
+  /* Accent - Sage/Lime Green */
+  --sage-50: #F7FAF0;
+  --sage-100: #EDF4DE;
+  --sage-200: #DCE9BE;
+  --sage-300: #C8DC8B;
+  --sage-400: #B5CF62;
+  --sage-500: #9BC044;
+  --sage-600: #7A9A33;
+  --sage-700: #5D762A;
+  --sage-800: #4B5E26;
+  --sage-900: #404F24;
+  --sage-950: #212B10;
 
-  /* Tertiary Accent - Orange (Energy, Superspot) */
-  --orange-950: #2D1508;
-  --orange-900: #4A2010;
-  --orange-800: #7C3012;
-  --orange-700: #A84415;
-  --orange-600: #D45A18;     /* Dark variant */
-  --orange-500: #FF7A2E;     /* TERTIARY BRAND COLOR - Superspot */
-  --orange-400: #FF9654;
-  --orange-300: #FFB27A;
-  --orange-200: #FFCEA0;
-  --orange-100: #FFE9D5;
-  --orange-50:  #FFF7ED;
+  /* Neutral - Cream/Sand */
+  --cream-50: #FEFDFB;
+  --cream-100: #FCF9F4;
+  --cream-200: #F7F1E7;
+  --cream-300: #F2E8DC;
+  --cream-400: #E8DBC9;
+  --cream-500: #DCCEB6;
+  --cream-600: #C4B094;
+  --cream-700: #A89272;
+  --cream-800: #8A7659;
+  --cream-900: #72614A;
+  --cream-950: #3D3325;
+
+  /* Neutral - Taupe/Dusty Rose */
+  --taupe-50: #FAF8F6;
+  --taupe-100: #F3EFEB;
+  --taupe-200: #E6DED6;
+  --taupe-300: #D5C9BD;
+  --taupe-400: #C4A99A;
+  --taupe-500: #B08F7B;
+  --taupe-600: #9C7A67;
+  --taupe-700: #826456;
+  --taupe-800: #6B5348;
+  --taupe-900: #59463D;
+  --taupe-950: #2F2420;
+
+  /* Accent - Olive/Teal */
+  --olive-50: #F4F6F5;
+  --olive-100: #E6EAE8;
+  --olive-200: #CED6D2;
+  --olive-300: #ADBAB4;
+  --olive-400: #859790;
+  --olive-500: #5B7B7A;
+  --olive-600: #4D6564;
+  --olive-700: #415352;
+  --olive-800: #384545;
+  --olive-900: #313B3B;
+  --olive-950: #1A2121;
+
+  /* Light Blue */
+  --sky-50: #F5FAFD;
+  --sky-100: #E8F4FB;
+  --sky-200: #D0E4F5;
+  --sky-300: #A8D0ED;
+  --sky-400: #7AB8E2;
+  --sky-500: #549FD6;
+  --sky-600: #3F85C3;
+  --sky-700: #356CA2;
+  --sky-800: #2F5985;
+  --sky-900: #2B4B6D;
+  --sky-950: #1D3149;
 
   /* Semantic Colors */
-  --success-dark: #065F46;
-  --success: #10B981;
-  --success-light: #6EE7B7;
-  --success-bg: rgba(16, 185, 129, 0.15);
+  --success-dark: #3D6B4A;
+  --success: #5D9B6D;
+  --success-light: #8FC59A;
+  --success-bg: rgba(93, 155, 109, 0.1);
 
-  --warning-dark: #92400E;
-  --warning: #F59E0B;
-  --warning-light: #FCD34D;
-  --warning-bg: rgba(245, 158, 11, 0.15);
+  --warning-dark: #A88534;
+  --warning: #D4A843;
+  --warning-light: #E8C876;
+  --warning-bg: rgba(212, 168, 67, 0.1);
 
-  --error-dark: #991B1B;
-  --error: #EF4444;
-  --error-light: #FCA5A5;
-  --error-bg: rgba(239, 68, 68, 0.15);
+  --error-dark: #9A4444;
+  --error: #C45B5B;
+  --error-light: #E08A8A;
+  --error-bg: rgba(196, 91, 91, 0.1);
 
-  --info-dark: #1E40AF;
-  --info: #3B82F6;
-  --info-light: #93C5FD;
-  --info-bg: rgba(59, 130, 246, 0.15);
+  --info-dark: #446A96;
+  --info: #5A8BC4;
+  --info-light: #8AB4DD;
+  --info-bg: rgba(90, 139, 196, 0.1);
 
-  /* Neutral Colors - For text and UI elements on dark backgrounds */
+  /* Neutral Colors */
   --white: #FFFFFF;
-  --white-95: rgba(255, 255, 255, 0.95);
-  --white-90: rgba(255, 255, 255, 0.90);
-  --white-80: rgba(255, 255, 255, 0.80);
-  --white-70: rgba(255, 255, 255, 0.70);
-  --white-60: rgba(255, 255, 255, 0.60);
-  --white-50: rgba(255, 255, 255, 0.50);
-  --white-40: rgba(255, 255, 255, 0.40);
-  --white-30: rgba(255, 255, 255, 0.30);
-  --white-20: rgba(255, 255, 255, 0.20);
-  --white-10: rgba(255, 255, 255, 0.10);
-  --white-05: rgba(255, 255, 255, 0.05);
+  --black: #1A1A1A;
 
-  --black: #000000;
-  --black-90: rgba(0, 0, 0, 0.90);
-  --black-80: rgba(0, 0, 0, 0.80);
-  --black-60: rgba(0, 0, 0, 0.60);
-  --black-40: rgba(0, 0, 0, 0.40);
-  --black-20: rgba(0, 0, 0, 0.20);
+  --black-90: rgba(26, 26, 26, 0.90);
+  --black-80: rgba(26, 26, 26, 0.80);
+  --black-70: rgba(26, 26, 26, 0.70);
+  --black-60: rgba(26, 26, 26, 0.60);
+  --black-50: rgba(26, 26, 26, 0.50);
+  --black-40: rgba(26, 26, 26, 0.40);
+  --black-30: rgba(26, 26, 26, 0.30);
+  --black-20: rgba(26, 26, 26, 0.20);
+  --black-10: rgba(26, 26, 26, 0.10);
+  --black-05: rgba(26, 26, 26, 0.05);
 
   /* ==========================================================================
-     GRADIENTS - Key visual differentiator for Hactually
+     GRADIENTS
      ========================================================================== */
 
-  /* Primary Gradients - Purple to Pink (Brand signature) */
-  --gradient-brand: linear-gradient(135deg, var(--purple-800) 0%, var(--pink-600) 100%);
-  --gradient-brand-vivid: linear-gradient(135deg, var(--purple-700) 0%, var(--pink-500) 100%);
-  --gradient-brand-subtle: linear-gradient(135deg, var(--purple-850) 0%, var(--purple-700) 100%);
+  /* Brand Gradients */
+  --gradient-brand: linear-gradient(135deg, var(--periwinkle-500) 0%, var(--coral-500) 100%);
+  --gradient-brand-soft: linear-gradient(135deg, var(--periwinkle-200) 0%, var(--coral-300) 100%);
+  --gradient-brand-subtle: linear-gradient(135deg, var(--cream-300) 0%, var(--periwinkle-100) 100%);
 
   /* Horizontal Gradients */
-  --gradient-horizontal-pink: linear-gradient(90deg, var(--pink-600) 0%, var(--pink-400) 100%);
-  --gradient-horizontal-cyan: linear-gradient(90deg, var(--cyan-600) 0%, var(--cyan-400) 100%);
-  --gradient-horizontal-orange: linear-gradient(90deg, var(--orange-600) 0%, var(--orange-400) 100%);
+  --gradient-coral: linear-gradient(90deg, var(--coral-600) 0%, var(--coral-400) 100%);
+  --gradient-sage: linear-gradient(90deg, var(--sage-600) 0%, var(--sage-400) 100%);
+  --gradient-periwinkle: linear-gradient(90deg, var(--periwinkle-600) 0%, var(--periwinkle-400) 100%);
 
-  /* Vertical Gradients - For backgrounds */
-  --gradient-background: linear-gradient(180deg, var(--purple-900) 0%, var(--purple-950) 100%);
-  --gradient-background-deep: linear-gradient(180deg, var(--purple-950) 0%, #050208 100%);
-  --gradient-card: linear-gradient(180deg, var(--purple-800) 0%, var(--purple-850) 100%);
+  /* Background Gradients */
+  --gradient-background: linear-gradient(180deg, var(--cream-50) 0%, var(--cream-200) 100%);
+  --gradient-card: linear-gradient(180deg, var(--white) 0%, var(--cream-100) 100%);
 
-  /* Radial Gradients - For spotlights/glows */
-  --gradient-spotlight-pink: radial-gradient(circle at center, var(--pink-500) 0%, transparent 70%);
-  --gradient-spotlight-cyan: radial-gradient(circle at center, var(--cyan-500) 0%, transparent 70%);
-  --gradient-spotlight-orange: radial-gradient(circle at center, var(--orange-500) 0%, transparent 70%);
-
-  /* Special Effect Gradients */
-  --gradient-match: linear-gradient(135deg, var(--pink-500) 0%, var(--orange-500) 100%);
-  --gradient-superspot: linear-gradient(135deg, var(--orange-500) 0%, var(--pink-500) 50%, var(--purple-500) 100%);
-  --gradient-venue-hot: linear-gradient(135deg, var(--orange-600) 0%, var(--pink-600) 100%);
-  --gradient-online: linear-gradient(135deg, var(--cyan-500) 0%, var(--success) 100%);
-
-  /* Mesh Gradients - For premium backgrounds */
-  --gradient-mesh-purple:
-    radial-gradient(at 20% 30%, var(--purple-700) 0%, transparent 50%),
-    radial-gradient(at 80% 70%, var(--pink-700) 0%, transparent 50%),
-    var(--purple-900);
-
-  --gradient-mesh-nightlife:
-    radial-gradient(at 10% 90%, var(--pink-600) 0%, transparent 40%),
-    radial-gradient(at 90% 10%, var(--cyan-600) 0%, transparent 40%),
-    radial-gradient(at 50% 50%, var(--purple-700) 0%, transparent 60%),
-    var(--purple-950);
-
-  /* Glass/Blur Gradients */
-  --gradient-glass: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.05) 100%
-  );
-  --gradient-glass-pink: linear-gradient(
-    135deg,
-    rgba(233, 30, 140, 0.2) 0%,
-    rgba(233, 30, 140, 0.05) 100%
-  );
+  /* Special Gradients */
+  --gradient-warm: linear-gradient(135deg, var(--cream-300) 0%, var(--coral-200) 100%);
+  --gradient-cool: linear-gradient(135deg, var(--periwinkle-100) 0%, var(--sky-200) 100%);
+  --gradient-nature: linear-gradient(135deg, var(--sage-100) 0%, var(--cream-300) 100%);
+  --gradient-sunset: linear-gradient(135deg, var(--coral-500) 0%, var(--warning) 100%);
 
   /* ==========================================================================
-     TYPOGRAPHY - SF Pro
+     TYPOGRAPHY - Ezra
      ========================================================================== */
 
-  /* Font Family - SF Pro for elegant, premium feel */
-  --font-sans: 'SF Pro Text', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-  --font-display: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-sans: 'Ezra', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Ezra', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
   --font-mono: 'SF Mono', 'Fira Code', monospace;
 
-  /* Headline Weights - Thin for modern, airy feel */
-  --font-headline: 200;        /* Thin headlines */
-  --font-headline-light: 300;  /* Light headlines */
-
-  /* Font Sizes - Mobile optimized */
-  --text-3xs: 0.625rem;      /* 10px - micro labels, timestamps */
-  --text-2xs: 0.6875rem;     /* 11px - badges, captions */
-  --text-xs: 0.75rem;        /* 12px - secondary info */
-  --text-sm: 0.8125rem;      /* 13px - body small */
-  --text-base: 0.9375rem;    /* 15px - body text */
-  --text-md: 1rem;           /* 16px - emphasized body */
-  --text-lg: 1.125rem;       /* 18px - large body, small headings */
-  --text-xl: 1.25rem;        /* 20px - section titles */
-  --text-2xl: 1.5rem;        /* 24px - card titles */
-  --text-3xl: 1.875rem;      /* 30px - screen titles */
-  --text-4xl: 2.25rem;       /* 36px - hero text */
-  --text-5xl: 3rem;          /* 48px - display */
-  --text-6xl: 3.75rem;       /* 60px - large display */
+  /* Font Sizes */
+  --text-3xs: 0.625rem;      /* 10px */
+  --text-2xs: 0.6875rem;     /* 11px */
+  --text-xs: 0.75rem;        /* 12px */
+  --text-sm: 0.8125rem;      /* 13px */
+  --text-base: 0.9375rem;    /* 15px */
+  --text-md: 1rem;           /* 16px */
+  --text-lg: 1.125rem;       /* 18px */
+  --text-xl: 1.25rem;        /* 20px */
+  --text-2xl: 1.5rem;        /* 24px */
+  --text-3xl: 1.875rem;      /* 30px */
+  --text-4xl: 2.25rem;       /* 36px */
+  --text-5xl: 3rem;          /* 48px */
+  --text-6xl: 3.75rem;       /* 60px */
 
   /* Line Heights */
   --leading-none: 1;
@@ -216,6 +210,7 @@
   --font-semibold: 600;
   --font-bold: 700;
   --font-extrabold: 800;
+  --font-black: 900;
 
   /* Letter Spacing */
   --tracking-tighter: -0.05em;
@@ -226,7 +221,7 @@
   --tracking-widest: 0.1em;
 
   /* ==========================================================================
-     SPACING - 4px base unit
+     SPACING
      ========================================================================== */
 
   --space-0: 0;
@@ -251,10 +246,8 @@
   --space-16: 4rem;          /* 64px */
   --space-20: 5rem;          /* 80px */
   --space-24: 6rem;          /* 96px */
-  --space-28: 7rem;          /* 112px */
-  --space-32: 8rem;          /* 128px */
 
-  /* Safe Area Insets - for notched devices */
+  /* Safe Area Insets */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
@@ -265,78 +258,69 @@
      ========================================================================== */
 
   --radius-none: 0;
-  --radius-sm: 0.25rem;      /* 4px - small elements */
-  --radius-default: 0.375rem;/* 6px - inputs, small buttons */
-  --radius-md: 0.5rem;       /* 8px - buttons */
-  --radius-lg: 0.75rem;      /* 12px - cards */
-  --radius-xl: 1rem;         /* 16px - modals, large cards */
-  --radius-2xl: 1.25rem;     /* 20px - profile cards */
-  --radius-3xl: 1.5rem;      /* 24px - bottom sheets */
-  --radius-4xl: 2rem;        /* 32px - featured cards */
-  --radius-full: 9999px;     /* Pills, avatars, circular */
+  --radius-sm: 0.25rem;      /* 4px */
+  --radius-default: 0.375rem;/* 6px */
+  --radius-md: 0.5rem;       /* 8px */
+  --radius-lg: 0.75rem;      /* 12px */
+  --radius-xl: 1rem;         /* 16px */
+  --radius-2xl: 1.25rem;     /* 20px */
+  --radius-3xl: 1.5rem;      /* 24px */
+  --radius-4xl: 2rem;        /* 32px */
+  --radius-full: 9999px;
 
   /* ==========================================================================
-     SHADOWS - Colored shadows for nightlife aesthetic
+     SHADOWS
      ========================================================================== */
 
   /* Standard Shadows */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.35);
-  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.4);
-  --shadow-2xl: 0 24px 48px rgba(0, 0, 0, 0.5);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.12);
+  --shadow-2xl: 0 24px 48px rgba(0, 0, 0, 0.15);
 
-  /* Colored Glow Shadows - The Hactually signature */
-  --glow-pink-sm: 0 0 10px rgba(233, 30, 140, 0.3);
-  --glow-pink-md: 0 0 20px rgba(233, 30, 140, 0.4);
-  --glow-pink-lg: 0 0 30px rgba(233, 30, 140, 0.5);
-  --glow-pink-xl: 0 0 50px rgba(233, 30, 140, 0.6);
+  /* Colored Shadows */
+  --glow-coral-sm: 0 4px 12px rgba(224, 123, 103, 0.2);
+  --glow-coral-md: 0 6px 20px rgba(224, 123, 103, 0.25);
+  --glow-coral-lg: 0 8px 30px rgba(224, 123, 103, 0.3);
 
-  --glow-cyan-sm: 0 0 10px rgba(32, 201, 188, 0.3);
-  --glow-cyan-md: 0 0 20px rgba(32, 201, 188, 0.4);
-  --glow-cyan-lg: 0 0 30px rgba(32, 201, 188, 0.5);
+  --glow-periwinkle-sm: 0 4px 12px rgba(107, 116, 168, 0.2);
+  --glow-periwinkle-md: 0 6px 20px rgba(107, 116, 168, 0.25);
+  --glow-periwinkle-lg: 0 8px 30px rgba(107, 116, 168, 0.3);
 
-  --glow-orange-sm: 0 0 10px rgba(255, 122, 46, 0.3);
-  --glow-orange-md: 0 0 20px rgba(255, 122, 46, 0.4);
-  --glow-orange-lg: 0 0 30px rgba(255, 122, 46, 0.5);
-
-  --glow-purple-sm: 0 0 10px rgba(107, 66, 168, 0.3);
-  --glow-purple-md: 0 0 20px rgba(107, 66, 168, 0.4);
-  --glow-purple-lg: 0 0 30px rgba(107, 66, 168, 0.5);
+  --glow-sage-sm: 0 4px 12px rgba(155, 192, 68, 0.2);
+  --glow-sage-md: 0 6px 20px rgba(155, 192, 68, 0.25);
 
   /* Card Shadows */
-  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.4), var(--glow-pink-sm);
-  --shadow-card-active: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.1);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(107, 116, 168, 0.1);
 
   /* Button Shadows */
-  --shadow-button-pink: 0 4px 14px rgba(233, 30, 140, 0.4);
-  --shadow-button-cyan: 0 4px 14px rgba(32, 201, 188, 0.4);
-  --shadow-button-orange: 0 4px 14px rgba(255, 122, 46, 0.4);
+  --shadow-button-coral: 0 4px 14px rgba(224, 123, 103, 0.3);
+  --shadow-button-periwinkle: 0 4px 14px rgba(107, 116, 168, 0.3);
+  --shadow-button-sage: 0 4px 14px rgba(155, 192, 68, 0.3);
 
   /* Focus Rings */
-  --ring-pink: 0 0 0 3px rgba(233, 30, 140, 0.4);
-  --ring-cyan: 0 0 0 3px rgba(32, 201, 188, 0.4);
-  --ring-white: 0 0 0 3px rgba(255, 255, 255, 0.3);
+  --ring-coral: 0 0 0 3px rgba(224, 123, 103, 0.3);
+  --ring-periwinkle: 0 0 0 3px rgba(107, 116, 168, 0.3);
+  --ring-sage: 0 0 0 3px rgba(155, 192, 68, 0.3);
 
   /* ==========================================================================
      BORDERS
      ========================================================================== */
 
-  --border-subtle: 1px solid var(--white-10);
-  --border-default: 1px solid var(--white-20);
-  --border-strong: 1px solid var(--white-30);
-  --border-pink: 1px solid var(--pink-500);
-  --border-cyan: 1px solid var(--cyan-500);
-  --border-glow-pink: 1px solid rgba(233, 30, 140, 0.5);
-  --border-glow-cyan: 1px solid rgba(32, 201, 188, 0.5);
+  --border-subtle: 1px solid var(--black-05);
+  --border-default: 1px solid var(--black-10);
+  --border-strong: 1px solid var(--black-20);
+  --border-periwinkle: 1px solid var(--periwinkle-500);
+  --border-coral: 1px solid var(--coral-500);
+  --border-sage: 1px solid var(--sage-500);
 
   /* ==========================================================================
-     TRANSITIONS & TIMING
+     TRANSITIONS
      ========================================================================== */
 
-  /* Durations */
   --duration-instant: 50ms;
   --duration-fast: 100ms;
   --duration-normal: 150ms;
@@ -345,25 +329,15 @@
   --duration-slower: 400ms;
   --duration-slowest: 500ms;
 
-  /* Easing Functions */
   --ease-linear: linear;
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-  /* Transition Presets */
-  --transition-colors: color, background-color, border-color, fill, stroke var(--duration-fast) var(--ease-out);
-  --transition-opacity: opacity var(--duration-normal) var(--ease-out);
-  --transition-transform: transform var(--duration-normal) var(--ease-smooth);
-  --transition-shadow: box-shadow var(--duration-normal) var(--ease-out);
-  --transition-all: all var(--duration-normal) var(--ease-out);
 
   /* ==========================================================================
-     Z-INDEX SCALE
+     Z-INDEX
      ========================================================================== */
 
   --z-below: -1;
@@ -380,7 +354,7 @@
   --z-max: 9999;
 
   /* ==========================================================================
-     COMPONENT-SPECIFIC TOKENS
+     COMPONENT TOKENS
      ========================================================================== */
 
   /* Avatar Sizes */
@@ -391,12 +365,11 @@
   --avatar-xl: 4rem;         /* 64px */
   --avatar-2xl: 5rem;        /* 80px */
   --avatar-3xl: 6rem;        /* 96px */
-  --avatar-profile: 7.5rem;  /* 120px */
 
-  /* Button Heights - Touch-friendly */
+  /* Button Heights */
   --button-xs: 2rem;         /* 32px */
   --button-sm: 2.5rem;       /* 40px */
-  --button-md: 2.75rem;      /* 44px - min touch */
+  --button-md: 2.75rem;      /* 44px */
   --button-lg: 3rem;         /* 48px */
   --button-xl: 3.5rem;       /* 56px */
 
@@ -405,63 +378,69 @@
   --input-md: 2.75rem;       /* 44px */
   --input-lg: 3rem;          /* 48px */
 
-  /* Bottom Navigation */
-  --nav-height: 5rem;        /* 80px including safe area padding */
-  --nav-icon-size: 1.5rem;   /* 24px */
-
-  /* Header */
+  /* Navigation */
+  --nav-height: 5rem;        /* 80px */
   --header-height: 3.5rem;   /* 56px */
 
-  /* Card Dimensions */
-  --card-profile-width: 100%;
-  --card-profile-aspect: 4/5; /* Portrait ratio for profile cards */
-  --card-venue-height: 12rem; /* 192px */
-
-  /* Map Markers */
-  --marker-sm: 2rem;         /* 32px */
-  --marker-md: 2.5rem;       /* 40px */
-  --marker-lg: 3rem;         /* 48px */
-  --marker-cluster: 3.5rem;  /* 56px */
-
   /* ==========================================================================
-     GLASSMORPHISM
+     GLASSMORPHISM (Light Theme)
      ========================================================================== */
 
-  --glass-bg: rgba(45, 27, 69, 0.7);
-  --glass-bg-light: rgba(45, 27, 69, 0.5);
-  --glass-bg-dark: rgba(13, 6, 18, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-cream: rgba(242, 232, 220, 0.8);
+  --glass-bg-periwinkle: rgba(107, 116, 168, 0.1);
+  --glass-border: rgba(107, 116, 168, 0.1);
   --glass-blur: 12px;
-  --glass-blur-heavy: 20px;
 }
 
 /* ==========================================================================
-   DARK THEME SEMANTIC ALIASES (Default)
+   SEMANTIC ALIASES
    ========================================================================== */
 
 :root {
   /* Background Hierarchy */
-  --bg-app: var(--purple-900);
-  --bg-surface: var(--purple-850);
-  --bg-elevated: var(--purple-800);
-  --bg-overlay: var(--black-60);
+  --bg-app: var(--cream-50);
+  --bg-surface: var(--white);
+  --bg-elevated: var(--cream-100);
+  --bg-overlay: rgba(26, 26, 26, 0.4);
 
   /* Text Hierarchy */
-  --text-primary: var(--white);
-  --text-secondary: var(--white-70);
-  --text-tertiary: var(--white-50);
-  --text-muted: var(--white-40);
-  --text-disabled: var(--white-30);
-  --text-inverse: var(--purple-900);
+  --text-primary: var(--periwinkle-950);
+  --text-secondary: var(--periwinkle-700);
+  --text-tertiary: var(--taupe-500);
+  --text-muted: var(--taupe-400);
+  --text-disabled: var(--taupe-300);
+  --text-inverse: var(--white);
 
   /* Interactive States */
-  --interactive-default: var(--pink-500);
-  --interactive-hover: var(--pink-400);
-  --interactive-active: var(--pink-300);
-  --interactive-disabled: var(--purple-600);
+  --interactive-default: var(--periwinkle-500);
+  --interactive-hover: var(--periwinkle-600);
+  --interactive-active: var(--periwinkle-700);
+  --interactive-disabled: var(--taupe-300);
 
   /* Accent Colors Semantic */
-  --accent-primary: var(--pink-500);
-  --accent-secondary: var(--cyan-500);
-  --accent-tertiary: var(--orange-500);
+  --accent-primary: var(--periwinkle-500);
+  --accent-secondary: var(--coral-500);
+  --accent-tertiary: var(--sage-500);
+}
+
+/* ==========================================================================
+   BASE STYLES
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  line-height: var(--leading-relaxed);
 }

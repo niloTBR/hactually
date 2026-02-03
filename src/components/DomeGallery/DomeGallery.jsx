@@ -96,7 +96,8 @@ export default function DomeGallery({
   autoRotateSpeed = 0.2,
   dynamicPresence = false,
   presenceDuration = [6, 12], // min/max seconds for animation cycle
-  spottedIds = [] // Array of spotted person IDs
+  spottedIds = [], // Array of spotted person IDs
+  focusedImage = null // Avatar URL of focused person - increases padding around them
 }) {
   const rootRef = useRef(null);
   const mainRef = useRef(null);
@@ -376,7 +377,7 @@ export default function DomeGallery({
   return (
     <div
       ref={rootRef}
-      className="sphere-root"
+      className={`sphere-root${focusedImage ? ' has-focus' : ''}`}
       style={{
         '--segments-x': segments,
         '--segments-y': segments,
@@ -389,10 +390,12 @@ export default function DomeGallery({
       <main ref={mainRef} className="sphere-main">
         <div className="stage">
           <div ref={sphereRef} className="sphere">
-            {items.map((it, i) => (
+            {items.map((it, i) => {
+              const isFocused = focusedImage === it.src;
+              return (
               <div
                 key={`${it.x},${it.y},${i}`}
-                className="item"
+                className={`item${isFocused ? ' is-focused' : ''}`}
                 data-src={it.src}
                 data-offset-x={it.x}
                 data-offset-y={it.y}
@@ -401,8 +404,8 @@ export default function DomeGallery({
                 style={{
                   '--offset-x': it.x,
                   '--offset-y': it.y,
-                  '--item-size-x': it.sizeX,
-                  '--item-size-y': it.sizeY
+                  '--item-size-x': isFocused ? 5 : it.sizeX,
+                  '--item-size-y': isFocused ? 5 : it.sizeY
                 }}
               >
                 <div
@@ -425,7 +428,8 @@ export default function DomeGallery({
                   )}
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
