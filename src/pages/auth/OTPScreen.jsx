@@ -5,9 +5,8 @@ import { useAuthStore } from '../../store/authStore';
 import { cn } from '../../lib/utils';
 
 /**
- * OTP Verification Screen
- * Verifies phone number with 6-digit code
- * Flow: OTP -> Profile Setup (new user) or Home (existing user)
+ * OTP Verification Screen - Hactually 2.0 Branding
+ * Warm cream background, blue accents, white inputs
  */
 export default function OTPScreen() {
   const navigate = useNavigate();
@@ -15,14 +14,13 @@ export default function OTPScreen() {
   const { verifyOTP, sendOTP, isLoading } = useAuthStore();
 
   const phone = location.state?.phone || '';
-  const devOTP = location.state?.devOTP; // For development
+  const devOTP = location.state?.devOTP;
 
   const [otp, setOtp] = React.useState(['', '', '', '', '', '']);
   const [error, setError] = React.useState('');
   const [resendTimer, setResendTimer] = React.useState(30);
   const inputRefs = React.useRef([]);
 
-  // Countdown timer for resend
   React.useEffect(() => {
     if (resendTimer > 0) {
       const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
@@ -30,14 +28,11 @@ export default function OTPScreen() {
     }
   }, [resendTimer]);
 
-  // Auto-focus first input
   React.useEffect(() => {
     inputRefs.current[0]?.focus();
   }, []);
 
-  // Handle OTP input
   const handleChange = (index, value) => {
-    // Only allow numbers
     if (value && !/^\d$/.test(value)) return;
 
     const newOtp = [...otp];
@@ -45,25 +40,21 @@ export default function OTPScreen() {
     setOtp(newOtp);
     setError('');
 
-    // Auto-focus next input
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
 
-    // Auto-submit when complete
     if (value && index === 5 && newOtp.every(d => d)) {
       handleVerify(newOtp.join(''));
     }
   };
 
-  // Handle backspace
   const handleKeyDown = (index, e) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
-  // Handle paste
   const handlePaste = (e) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
@@ -75,7 +66,6 @@ export default function OTPScreen() {
     }
   };
 
-  // Verify OTP
   const handleVerify = async (code) => {
     setError('');
     const result = await verifyOTP(phone, code);
@@ -93,7 +83,6 @@ export default function OTPScreen() {
     }
   };
 
-  // Resend OTP
   const handleResend = async () => {
     if (resendTimer > 0) return;
 
@@ -104,26 +93,24 @@ export default function OTPScreen() {
       setError('');
       inputRefs.current[0]?.focus();
 
-      // Update devOTP if available
       if (result.devOTP) {
         console.log(`[DEV] New OTP: ${result.devOTP}`);
       }
     }
   };
 
-  // Format phone for display
   const formatPhone = (p) => {
     if (!p) return '';
     return p.replace(/(\+\d+)(\d{2})(\d{3})(\d{4})/, '$1 $2 $3 $4');
   };
 
   return (
-    <div className="min-h-screen bg-purple-950 flex flex-col">
+    <div className="min-h-screen bg-brown-lighter flex flex-col">
       {/* Header */}
       <header className="flex items-center px-4 pt-12 pb-6">
         <button
           onClick={() => navigate(-1)}
-          className="h-10 w-10 rounded-full flex items-center justify-center text-white/70 hover:bg-white/10 transition-colors"
+          className="h-10 w-10 rounded-full bg-white shadow-card flex items-center justify-center text-brown hover:bg-brown-mid transition-colors"
         >
           <ChevronLeft className="h-6 w-6" />
         </button>
@@ -131,28 +118,28 @@ export default function OTPScreen() {
 
       {/* Content */}
       <div className="flex-1 px-6">
-        <h1 className="text-3xl font-extralight tracking-wide text-white mb-2">
+        <h1 className="text-3xl font-bold text-black mb-2">
           Verify your number
         </h1>
-        <p className="text-white/50 font-light mb-2">
+        <p className="text-brown mb-2">
           Enter the 6-digit code sent to
         </p>
-        <p className="text-white font-medium mb-8">
+        <p className="text-black font-bold mb-8">
           {formatPhone(phone)}
         </p>
 
         {/* Dev helper */}
         {devOTP && (
-          <div className="mb-6 p-3 rounded-2xl bg-pink-500/10 border border-pink-500/20">
-            <p className="text-pink-400 text-sm text-center">
-              Dev Mode - Your code: <span className="font-mono font-bold">{devOTP}</span>
+          <div className="mb-6 p-3 rounded-2xl bg-blue-light/30 border border-blue/20">
+            <p className="text-blue text-sm text-center font-medium">
+              Dev Mode - Your code: <span className="font-mono font-black">{devOTP}</span>
             </p>
           </div>
         )}
 
         {error && (
-          <div className="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/20">
-            <p className="text-red-400 text-sm">{error}</p>
+          <div className="mb-6 p-4 rounded-2xl bg-orange-light border border-orange/20">
+            <p className="text-orange-dark text-sm font-medium">{error}</p>
           </div>
         )}
 
@@ -170,9 +157,9 @@ export default function OTPScreen() {
               onKeyDown={(e) => handleKeyDown(index, e)}
               disabled={isLoading}
               className={cn(
-                'w-12 h-16 rounded-2xl bg-white/5 text-center text-2xl font-bold text-white focus:outline-none transition-all',
-                error && 'ring-2 ring-red-500',
-                digit && 'bg-white/10'
+                'w-12 h-16 rounded-2xl bg-white text-center text-2xl font-black text-black border border-brown-light focus:outline-none focus:border-blue transition-all shadow-card',
+                error && 'border-orange',
+                digit && 'border-blue bg-blue-light/10'
               )}
             />
           ))}
@@ -181,14 +168,14 @@ export default function OTPScreen() {
         {/* Resend */}
         <div className="text-center">
           {resendTimer > 0 ? (
-            <p className="text-white/40 text-sm">
-              Resend code in <span className="text-white/70">{resendTimer}s</span>
+            <p className="text-brown text-sm">
+              Resend code in <span className="text-black font-bold">{resendTimer}s</span>
             </p>
           ) : (
             <button
               onClick={handleResend}
               disabled={isLoading}
-              className="text-pink-400 text-sm font-medium flex items-center gap-2 mx-auto hover:text-pink-300 transition-colors disabled:opacity-50"
+              className="text-blue text-sm font-bold flex items-center gap-2 mx-auto hover:text-blue-dark transition-colors disabled:opacity-50"
             >
               <RefreshCw className="h-4 w-4" />
               Resend Code
@@ -199,12 +186,11 @@ export default function OTPScreen() {
 
       {/* Loading indicator */}
       {isLoading && (
-        <div className="absolute inset-0 bg-purple-950/80 flex items-center justify-center z-50">
-          <div className="h-10 w-10 border-3 border-white/20 border-t-pink-500 rounded-full animate-spin" />
+        <div className="absolute inset-0 bg-brown-lighter/80 flex items-center justify-center z-50">
+          <div className="h-10 w-10 border-3 border-brown-light border-t-blue rounded-full animate-spin" />
         </div>
       )}
 
-      {/* Bottom safe area */}
       <div className="h-8" />
     </div>
   );

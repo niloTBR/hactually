@@ -5,8 +5,8 @@ import { useAuthStore } from '../../store/authStore';
 import { cn } from '../../lib/utils';
 
 /**
- * Login/Sign Up Screen
- * Semi-circle gradient at top with dark background below
+ * Login/Sign Up Screen - Hactually 2.0 Branding
+ * Warm cream background, blue accents, clean form
  */
 export default function LoginScreen() {
   const navigate = useNavigate();
@@ -61,59 +61,59 @@ export default function LoginScreen() {
   };
 
   return (
-    <div className="h-full w-full flex flex-col relative overflow-hidden bg-purple-950">
+    <div className="h-full w-full flex flex-col relative overflow-hidden bg-brown-lighter">
 
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col items-center pt-10 pb-6 px-6">
         {/* Logo */}
         <div className="flex flex-col items-center mb-3">
-          <div className="h-14 w-14 rounded-full bg-black/80 backdrop-blur flex items-center justify-center mb-2 border border-white/10">
-            <Eye className="h-7 w-7 text-pink-500" />
+          <div className="h-14 w-14 rounded-full bg-blue flex items-center justify-center mb-2 shadow-glow-blue">
+            <Eye className="h-7 w-7 text-white" />
           </div>
-          <h1 className="text-2xl font-light text-white tracking-wide">
+          <h1 className="text-2xl font-black text-blue tracking-wide">
             hactually
           </h1>
         </div>
 
         {/* Form */}
         <div className="w-full max-w-sm mt-auto">
-          <h2 className="text-xl font-semibold text-white text-center mb-5">
+          <h2 className="text-xl font-bold text-black text-center mb-5">
             {isSignUp ? 'Create Your Account' : 'Welcome Back'}
           </h2>
 
           {error && (
-            <div className="mb-4 p-3 rounded-2xl bg-red-500/20 border border-red-500/30">
-              <p className="text-red-300 text-sm text-center">{error}</p>
+            <div className="mb-4 p-3 rounded-2xl bg-orange-light border border-orange/30">
+              <p className="text-orange-dark text-sm text-center font-medium">{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-3">
             {/* Email Input */}
             <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-brown" />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
-                className="w-full h-14 pl-12 pr-4 rounded-2xl bg-white/10 text-white placeholder:text-white/50 border border-white/10 focus:outline-none focus:border-pink-500/50 transition-colors"
+                className="w-full h-14 pl-12 pr-4 rounded-2xl bg-white text-black placeholder:text-brown/50 border border-brown-light focus:outline-none focus:border-blue transition-colors shadow-card"
               />
             </div>
 
             {/* Password Input */}
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-brown" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
-                className="w-full h-14 pl-12 pr-12 rounded-2xl bg-white/10 text-white placeholder:text-white/50 border border-white/10 focus:outline-none focus:border-pink-500/50 transition-colors"
+                className="w-full h-14 pl-12 pr-12 rounded-2xl bg-white text-black placeholder:text-brown/50 border border-brown-light focus:outline-none focus:border-blue transition-colors shadow-card"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-brown hover:text-brown-dark transition-colors"
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
@@ -126,20 +126,20 @@ export default function LoginScreen() {
                 className={cn(
                   'h-5 w-5 rounded border-2 flex items-center justify-center transition-all',
                   rememberMe
-                    ? 'bg-pink-500 border-pink-500'
-                    : 'border-white/30 bg-transparent'
+                    ? 'bg-blue border-blue'
+                    : 'border-brown-light bg-transparent'
                 )}
               >
                 {rememberMe && <Check className="h-3 w-3 text-white" />}
               </div>
-              <span className="text-white/60 text-sm">Remember me</span>
+              <span className="text-brown text-sm">Remember me</span>
             </label>
 
             {/* Sign Up Button */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-14 rounded-full bg-gradient-to-r from-pink-600 to-pink-500 text-white font-semibold text-base shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 active:scale-[0.98] transition-all disabled:opacity-50"
+              className="w-full h-14 rounded-full bg-blue text-white font-bold text-base shadow-glow-blue hover:bg-blue-dark active:scale-[0.98] transition-all disabled:opacity-50"
             >
               {isLoading ? (
                 <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
@@ -151,9 +151,9 @@ export default function LoginScreen() {
 
           {/* Divider */}
           <div className="flex items-center gap-4 my-5">
-            <div className="flex-1 h-px bg-white/10" />
-            <span className="text-white/40 text-xs">or continue with</span>
-            <div className="flex-1 h-px bg-white/10" />
+            <div className="flex-1 h-px bg-brown-light" />
+            <span className="text-brown text-xs">or continue with</span>
+            <div className="flex-1 h-px bg-brown-light" />
           </div>
 
           {/* Social Login Buttons */}
@@ -162,7 +162,7 @@ export default function LoginScreen() {
             <button
               onClick={() => handleOAuthLogin('facebook')}
               disabled={isLoading}
-              className="h-11 w-11 rounded-full bg-[#1877F2] flex items-center justify-center hover:opacity-90 active:scale-95 transition-all disabled:opacity-50"
+              className="h-11 w-11 rounded-full bg-[#1877F2] flex items-center justify-center hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 shadow-sm"
             >
               <svg className="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M9.198 21.5h4v-8.01h3.604l.396-3.98h-4V7.5a1 1 0 011-1h3v-4h-3a5 5 0 00-5 5v2.01h-2l-.396 3.98h2.396v8.01z" />
@@ -173,7 +173,7 @@ export default function LoginScreen() {
             <button
               onClick={() => handleOAuthLogin('google')}
               disabled={isLoading}
-              className="h-11 w-11 rounded-full bg-white flex items-center justify-center hover:opacity-90 active:scale-95 transition-all disabled:opacity-50"
+              className="h-11 w-11 rounded-full bg-white border border-brown-light flex items-center justify-center hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 shadow-sm"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -187,7 +187,7 @@ export default function LoginScreen() {
             <button
               onClick={() => handleOAuthLogin('apple')}
               disabled={isLoading}
-              className="h-11 w-11 rounded-full bg-white/10 flex items-center justify-center hover:opacity-90 active:scale-95 transition-all disabled:opacity-50"
+              className="h-11 w-11 rounded-full bg-black flex items-center justify-center hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 shadow-sm"
             >
               <svg className="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
@@ -196,11 +196,11 @@ export default function LoginScreen() {
           </div>
 
           {/* Toggle Sign In/Up */}
-          <p className="text-center mt-6 text-white/50 text-sm">
+          <p className="text-center mt-6 text-brown text-sm">
             {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
             <button
               onClick={() => setIsSignUp(!isSignUp)}
-              className="text-pink-400 font-medium hover:text-pink-300 transition-colors"
+              className="text-blue font-bold hover:text-blue-dark transition-colors"
             >
               {isSignUp ? 'Sign in' : 'Sign up'}
             </button>

@@ -5,19 +5,17 @@ import { useAuthStore } from '../../store/authStore';
 import { cn } from '../../lib/utils';
 
 /**
- * Location Permission Screen (F)
- * CRITICAL GATING STEP: Requests GPS permission
- * Flow: Location -> Home (Map View)
+ * Location Permission Screen - Hactually 2.0 Branding
+ * Warm cream background, blue pulsing rings, orange accent
  */
 export default function LocationScreen() {
   const navigate = useNavigate();
   const { updateProfile, setOnboardingStep, user } = useAuthStore();
 
-  const [permissionState, setPermissionState] = React.useState('prompt'); // prompt, granted, denied
+  const [permissionState, setPermissionState] = React.useState('prompt');
   const [isRequesting, setIsRequesting] = React.useState(false);
   const [error, setError] = React.useState('');
 
-  // Check existing permission on mount
   React.useEffect(() => {
     if ('permissions' in navigator) {
       navigator.permissions.query({ name: 'geolocation' }).then((result) => {
@@ -27,7 +25,6 @@ export default function LocationScreen() {
     }
   }, []);
 
-  // Request location permission
   const handleRequestLocation = async () => {
     setIsRequesting(true);
     setError('');
@@ -41,7 +38,6 @@ export default function LocationScreen() {
         });
       });
 
-      // Save location to profile
       updateProfile({
         location: {
           latitude: position.coords.latitude,
@@ -51,10 +47,9 @@ export default function LocationScreen() {
         onboardingComplete: true,
       });
 
-      setOnboardingStep(4); // Complete
+      setOnboardingStep(4);
       setPermissionState('granted');
 
-      // Navigate to home
       setTimeout(() => {
         navigate('/home', { replace: true });
       }, 500);
@@ -76,7 +71,6 @@ export default function LocationScreen() {
     }
   };
 
-  // Skip location (for testing - in production this would be blocked)
   const handleSkip = () => {
     updateProfile({
       locationPermission: false,
@@ -87,12 +81,12 @@ export default function LocationScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-purple-950 flex flex-col">
+    <div className="min-h-screen bg-brown-lighter flex flex-col">
       {/* Header */}
       <header className="flex items-center px-4 pt-12 pb-6">
         <button
           onClick={() => navigate(-1)}
-          className="h-10 w-10 rounded-full flex items-center justify-center text-white/70 hover:bg-white/10 transition-colors"
+          className="h-10 w-10 rounded-full bg-white shadow-card flex items-center justify-center text-brown hover:bg-brown-mid transition-colors"
         >
           <ChevronLeft className="h-6 w-6" />
         </button>
@@ -105,23 +99,23 @@ export default function LocationScreen() {
           <div className="relative mb-8">
             {/* Pulsing rings */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-40 h-40 rounded-full bg-pink-500/10 animate-ping" style={{ animationDuration: '2s' }} />
+              <div className="w-40 h-40 rounded-full bg-blue/10 animate-ping" style={{ animationDuration: '2s' }} />
             </div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-32 h-32 rounded-full bg-pink-500/20" />
+              <div className="w-32 h-32 rounded-full bg-blue/15" />
             </div>
 
             {/* Center icon */}
-            <div className="relative h-24 w-24 rounded-full bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center shadow-2xl shadow-pink-500/30">
+            <div className="relative h-24 w-24 rounded-full bg-blue flex items-center justify-center shadow-glow-blue">
               <MapPin className="h-12 w-12 text-white" />
             </div>
           </div>
 
-          <h1 className="text-3xl font-extralight tracking-wide text-white text-center mb-3">
+          <h1 className="text-3xl font-bold text-black text-center mb-3">
             Enable Location
           </h1>
 
-          <p className="text-white/50 font-light text-center max-w-xs mb-8">
+          <p className="text-brown text-center max-w-xs mb-8">
             Hactually needs your location to show you who's actually around you
           </p>
 
@@ -133,10 +127,10 @@ export default function LocationScreen() {
               { icon: Shield, text: 'Your exact location is never shared' },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center">
-                  <item.icon className="h-5 w-5 text-pink-400" />
+                <div className="h-10 w-10 rounded-full bg-white shadow-card flex items-center justify-center">
+                  <item.icon className="h-5 w-5 text-blue" />
                 </div>
-                <p className="text-white/70 text-sm">{item.text}</p>
+                <p className="text-black text-sm">{item.text}</p>
               </div>
             ))}
           </div>
@@ -144,8 +138,8 @@ export default function LocationScreen() {
 
         {/* Error message */}
         {error && (
-          <div className="mb-4 p-4 rounded-2xl bg-red-500/10 border border-red-500/20">
-            <p className="text-red-400 text-sm">{error}</p>
+          <div className="mb-4 p-4 rounded-2xl bg-orange-light border border-orange/20">
+            <p className="text-orange-dark text-sm font-medium">{error}</p>
           </div>
         )}
 
@@ -155,16 +149,15 @@ export default function LocationScreen() {
             <>
               <button
                 onClick={() => {
-                  // Try to open settings (works on some browsers)
                   window.open('app-settings:', '_blank');
                 }}
-                className="w-full h-14 rounded-full bg-gradient-to-r from-pink-600 to-pink-500 text-white font-semibold text-lg shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                className="w-full h-14 rounded-full bg-blue text-white font-bold text-lg shadow-glow-blue hover:bg-blue-dark active:scale-[0.98] transition-all flex items-center justify-center gap-2"
               >
                 Open Settings
               </button>
               <button
                 onClick={handleRequestLocation}
-                className="w-full h-14 rounded-full bg-white/10 text-white font-semibold border border-white/10 hover:bg-white/15 active:scale-[0.98] transition-all"
+                className="w-full h-14 rounded-full bg-white text-black font-bold border border-brown-light shadow-card hover:bg-brown-mid active:scale-[0.98] transition-all"
               >
                 Try Again
               </button>
@@ -173,7 +166,7 @@ export default function LocationScreen() {
             <button
               onClick={handleRequestLocation}
               disabled={isRequesting}
-              className="w-full h-14 rounded-full bg-gradient-to-r from-pink-600 to-pink-500 text-white font-semibold text-lg shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-14 rounded-full bg-blue text-white font-bold text-lg shadow-glow-blue hover:bg-blue-dark active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isRequesting ? (
                 <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -186,11 +179,10 @@ export default function LocationScreen() {
             </button>
           )}
 
-          {/* Skip for testing */}
           {import.meta.env.DEV && (
             <button
               onClick={handleSkip}
-              className="w-full h-12 rounded-full text-white/40 text-sm hover:text-white/60 transition-colors"
+              className="w-full h-12 rounded-full text-brown text-sm hover:text-brown-dark transition-colors"
             >
               Skip for now (Dev only)
             </button>
