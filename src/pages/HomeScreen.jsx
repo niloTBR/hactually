@@ -868,7 +868,12 @@ function VenueModal({ venue, onClose, onCheckIn }) {
       `}</style>
       <div
         className="absolute left-0 right-0 z-10 flex flex-col justify-center gap-3"
-        style={{ top: '48px', bottom: 'calc(50% + 150px)' }}
+        style={{
+          top: '48px',
+          bottom: 'calc(50% + 150px)',
+          filter: `blur(${Math.max(0, 6 - (marqueeSpeed - 1) * 0.86)}px)`,
+          transition: marqueeSpeed === 1 ? 'filter 0.3s ease-out' : 'none',
+        }}
       >
         <div className="overflow-hidden">
           <div className="flex gap-3" style={{ animation: `marqueeLeft ${60 / marqueeSpeed}s linear infinite`, width: 'max-content' }}>
