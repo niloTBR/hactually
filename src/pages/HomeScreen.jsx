@@ -674,20 +674,20 @@ function VenueCard({ venue, depth = 0 }) {
           <div
             className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl"
             style={{
-              maskImage: 'linear-gradient(to bottom, transparent 10%, black 55%)',
-              WebkitMaskImage: 'linear-gradient(to bottom, transparent 10%, black 55%)',
+              maskImage: 'linear-gradient(to bottom, transparent 40%, black 75%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent 40%, black 75%)',
             }}
           >
-            <img src={venue.image} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ filter: 'blur(8px)', transform: 'scale(1.05) translateZ(0)' }} />
+            <img src={venue.image} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ filter: 'blur(6px)', transform: 'scale(1.05) translateZ(0)' }} />
           </div>
           <div
             className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl"
             style={{
-              maskImage: 'linear-gradient(to bottom, transparent 35%, black 85%)',
-              WebkitMaskImage: 'linear-gradient(to bottom, transparent 35%, black 85%)',
+              maskImage: 'linear-gradient(to bottom, transparent 60%, black 95%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent 60%, black 95%)',
             }}
           >
-            <img src={venue.image} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ filter: 'blur(28px)', transform: 'scale(1.1) translateZ(0)' }} />
+            <img src={venue.image} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ filter: 'blur(16px)', transform: 'scale(1.1) translateZ(0)' }} />
           </div>
         </>
       )}
