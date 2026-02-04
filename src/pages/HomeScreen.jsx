@@ -827,6 +827,38 @@ function VenueModal({ venue, onClose, onCheckIn }) {
         <X className="h-5 w-5 text-brown-lighter" />
       </button>
 
+      {/* Scrolling profile rows — two rows moving in opposite directions */}
+      <div className="absolute top-0 left-0 right-0 z-10" style={{ bottom: '52%' }}>
+        <style>{`
+          @keyframes marqueeLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          @keyframes marqueeRight {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+          }
+        `}</style>
+        <div className="absolute bottom-16 left-0 right-0 overflow-hidden">
+          <div className="flex gap-3" style={{ animation: 'marqueeLeft 20s linear infinite', width: 'max-content' }}>
+            {[...PROFILE_IMAGES, ...PROFILE_IMAGES, ...PROFILE_IMAGES].map((src, i) => (
+              <div key={`r1-${i}`} className="h-16 w-16 rounded-full overflow-hidden flex-shrink-0 border-2 border-white/15">
+                <img src={src} alt="" className="h-full w-full object-cover" />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 overflow-hidden">
+          <div className="flex gap-3" style={{ animation: 'marqueeRight 25s linear infinite', width: 'max-content' }}>
+            {[...PROFILE_IMAGES.slice(4), ...PROFILE_IMAGES.slice(0, 4), ...PROFILE_IMAGES, ...PROFILE_IMAGES].map((src, i) => (
+              <div key={`r2-${i}`} className="h-16 w-16 rounded-full overflow-hidden flex-shrink-0 border-2 border-white/15">
+                <img src={src} alt="" className="h-full w-full object-cover" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Venue image — BIG circle, progressively turns red during hold */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div
