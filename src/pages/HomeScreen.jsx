@@ -911,16 +911,21 @@ function VenueModal({ venue, onClose, onCheckIn }) {
         </div>
       </div>
 
-      {/* Bottom section — venue info + button + credits */}
+      {/* Venue info — perfectly centered between circle bottom and button top */}
+      <div
+        className="absolute left-0 right-0 flex flex-col items-center justify-center"
+        style={{
+          top: 'calc(50% + 140px)',
+          bottom: 'calc(40px + 48px + 12px + 16px + 16px)',
+          animation: 'fadeInUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both',
+        }}
+      >
+        <p className="text-brown-lighter text-xs"><span className="font-bold">{venue.peopleCount}</span> people checked in to <span className="font-bold">{venue.name}</span></p>
+        <p className="mt-1 text-brown-lighter text-[10px] italic">It's hactually happening.</p>
+      </div>
+
+      {/* Bottom section — button + credits */}
       <div className="absolute bottom-10 left-0 right-0 flex flex-col items-center px-8">
-        {/* Venue info — centered between circle and button */}
-        <div
-          className="mb-6 text-center"
-          style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both' }}
-        >
-          <p className="text-brown-lighter text-xs"><span className="font-bold">{venue.peopleCount}</span> people checked in to <span className="font-bold">{venue.name}</span></p>
-          <p className="mt-1 text-brown-lighter text-[10px] italic">It's hactually happening.</p>
-        </div>
         {/* Press & Hold button */}
         <div
           className="w-full max-w-[280px] relative h-12 rounded-full overflow-hidden"
