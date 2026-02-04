@@ -820,9 +820,21 @@ function VenueModal({ venue, onClose, onCheckIn }) {
 
       {/* Top bar — location pill + close button */}
       <div className="absolute top-4 left-4 right-4 z-30 flex items-center justify-between">
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ backgroundColor: 'rgba(245,241,232,0.15)' }}>
-          <MapPin className="h-3 w-3 text-brown-lighter/70" />
-          <span className="text-brown-lighter/70 text-[11px] font-medium">{venue.area}</span>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ backgroundColor: 'rgba(245,241,232,0.15)' }}>
+            <MapPin className="h-3 w-3 text-brown-lighter/70" />
+            <span className="text-brown-lighter/70 text-[11px] font-medium">{venue.area}</span>
+          </div>
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&destination=${venue.coordinates.lat},${venue.coordinates.lng}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-brown-lighter/70 text-[11px] font-medium hover:bg-white/10 transition-colors"
+            style={{ backgroundColor: 'rgba(245,241,232,0.15)' }}
+          >
+            {venue.distance}
+            <ChevronRight className="h-3 w-3" />
+          </a>
         </div>
         <button
           onClick={onClose}
