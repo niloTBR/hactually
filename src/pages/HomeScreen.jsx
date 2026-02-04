@@ -769,7 +769,6 @@ function VenueModal({ venue, onClose, onCheckIn }) {
   const [userCredits] = React.useState(5);
   const [holding, setHolding] = React.useState(false);
   const [holdComplete, setHoldComplete] = React.useState(false);
-  const [transitioning, setTransitioning] = React.useState(false);
   const holdTimerRef = React.useRef(null);
 
   const maskUrl = holding || holdComplete ? VENUE_MASK_ANIMATED : VENUE_MASK_STATIC;
@@ -779,10 +778,9 @@ function VenueModal({ venue, onClose, onCheckIn }) {
     setHolding(true);
     holdTimerRef.current = setTimeout(() => {
       setHoldComplete(true);
-      setTransitioning(true);
       setTimeout(() => {
         if (onCheckIn) onCheckIn(venue);
-      }, 1000);
+      }, 300);
     }, 2000);
   };
   const endHold = () => {
@@ -802,7 +800,13 @@ function VenueModal({ venue, onClose, onCheckIn }) {
   if (!venue) return null;
 
   return (
-    <div className="absolute inset-0 z-50" style={{ backgroundColor: '#8A8B73' }}>
+    <div
+      className="absolute inset-0 z-50"
+      style={{
+        backgroundColor: holding || holdComplete ? '#5865F2' : '#8A8B73',
+        transition: holding || holdComplete ? 'background-color 2s linear' : 'background-color 0.3s ease-out',
+      }}
+    >
       <style>{`
         @keyframes fadeInUp {
           0% { opacity: 0; transform: translateY(20px); }
@@ -823,17 +827,13 @@ function VenueModal({ venue, onClose, onCheckIn }) {
         <X className="h-5 w-5 text-brown-lighter" />
       </button>
 
-      {/* Venue image — BIG circle, radiates on hold */}
+      {/* Venue image — BIG circle, progressively turns red during hold */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div
-          className="flex-shrink-0"
+          className="relative flex-shrink-0"
           style={{
             width: '520px',
             height: '280px',
-            backgroundImage: transitioning ? 'none' : `url(${venue.image})`,
-            backgroundColor: transitioning ? '#C94A2F' : 'transparent',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
             maskImage: maskUrl,
             WebkitMaskImage: maskUrl,
             maskSize: 'auto 100%',
@@ -843,7 +843,24 @@ function VenueModal({ venue, onClose, onCheckIn }) {
             maskRepeat: 'no-repeat',
             WebkitMaskRepeat: 'no-repeat',
           }}
-        />
+        >
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url(${venue.image})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundColor: '#C94A2F',
+              opacity: holding || holdComplete ? 1 : 0,
+              transition: holding || holdComplete ? 'opacity 2s linear' : 'opacity 0.3s ease-out',
+            }}
+          />
+        </div>
       </div>
 
       {/* Venue name + type — below the circle */}
@@ -896,7 +913,7 @@ function VenueModal({ venue, onClose, onCheckIn }) {
             className="absolute inset-0 z-10 flex items-center justify-center select-none"
           >
             {holding || holdComplete ? (
-              <span className={`text-[10px] font-bold uppercase tracking-wide ${transitioning ? 'text-blue' : 'text-brown-lighter'}`}>Checking In</span>
+              <span className="text-[10px] text-brown-lighter font-bold uppercase tracking-wide">Checking In</span>
             ) : (
               <span className="text-[10px] text-brown-lighter font-bold uppercase tracking-wide">Press & Hold to Check In · 1 credit</span>
             )}
