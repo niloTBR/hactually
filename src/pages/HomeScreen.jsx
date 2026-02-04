@@ -871,7 +871,7 @@ function VenueModal({ venue, onClose, onCheckIn }) {
         style={{
           top: '48px',
           bottom: 'calc(50% + 150px)',
-          filter: `blur(${Math.max(0, 2.5 - (marqueeSpeed - 1) * 0.7)}px)`,
+          filter: `blur(${Math.max(0, 2.5 - (marqueeSpeed - 1) * 1.5)}px)`,
           transition: marqueeSpeed === 1 ? 'filter 0.3s ease-out' : 'none',
         }}
       >
