@@ -769,15 +769,26 @@ function VenueModal({ venue, onClose, onCheckIn }) {
   const [userCredits] = React.useState(5);
   const [holding, setHolding] = React.useState(false);
   const [holdComplete, setHoldComplete] = React.useState(false);
+  const [marqueeSpeed, setMarqueeSpeed] = React.useState(1);
   const holdTimerRef = React.useRef(null);
+  const holdStartRef = React.useRef(null);
+  const rafRef = React.useRef(null);
 
   const maskUrl = holding || holdComplete ? VENUE_MASK_ANIMATED : VENUE_MASK_STATIC;
 
-  // Press & hold — 2 second timer
+  // Press & hold — 2 second timer with progressive marquee speedup
   const startHold = () => {
     setHolding(true);
+    holdStartRef.current = Date.now();
+    const tick = () => {
+      const p = Math.min((Date.now() - holdStartRef.current) / 2000, 1);
+      setMarqueeSpeed(1 + p * 4);
+      if (p < 1) rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
     holdTimerRef.current = setTimeout(() => {
       setHoldComplete(true);
+      setMarqueeSpeed(5);
       setTimeout(() => {
         if (onCheckIn) onCheckIn(venue);
       }, 300);
@@ -785,15 +796,15 @@ function VenueModal({ venue, onClose, onCheckIn }) {
   };
   const endHold = () => {
     setHolding(false);
-    if (holdTimerRef.current) {
-      clearTimeout(holdTimerRef.current);
-      holdTimerRef.current = null;
-    }
+    setMarqueeSpeed(1);
+    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+    if (holdTimerRef.current) { clearTimeout(holdTimerRef.current); holdTimerRef.current = null; }
   };
 
   React.useEffect(() => {
     return () => {
       if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);
 
@@ -856,7 +867,7 @@ function VenueModal({ venue, onClose, onCheckIn }) {
         style={{ top: '48px', bottom: 'calc(50% + 150px)' }}
       >
         <div className="overflow-hidden">
-          <div className="flex gap-3" style={{ animation: 'marqueeLeft 20s linear infinite', width: 'max-content' }}>
+          <div className="flex gap-3" style={{ animation: `marqueeLeft ${20 / marqueeSpeed}s linear infinite`, width: 'max-content' }}>
             {[...PROFILE_IMAGES, ...PROFILE_IMAGES, ...PROFILE_IMAGES].map((src, i) => (
               <div key={`r1-${i}`} className="h-16 w-16 rounded-full overflow-hidden flex-shrink-0 border-2 border-white/15">
                 <img src={src} alt="" className="h-full w-full object-cover" />
@@ -865,7 +876,7 @@ function VenueModal({ venue, onClose, onCheckIn }) {
           </div>
         </div>
         <div className="overflow-hidden">
-          <div className="flex gap-3" style={{ animation: 'marqueeRight 25s linear infinite', width: 'max-content' }}>
+          <div className="flex gap-3" style={{ animation: `marqueeRight ${25 / marqueeSpeed}s linear infinite`, width: 'max-content' }}>
             {[...PROFILE_IMAGES.slice(4), ...PROFILE_IMAGES.slice(0, 4), ...PROFILE_IMAGES, ...PROFILE_IMAGES].map((src, i) => (
               <div key={`r2-${i}`} className="h-16 w-16 rounded-full overflow-hidden flex-shrink-0 border-2 border-white/15">
                 <img src={src} alt="" className="h-full w-full object-cover" />
