@@ -1,37 +1,7 @@
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MapPin, LogOut } from 'lucide-react';
-import { cn } from '../lib/utils';
 import DomeGallery from '../components/DomeGallery';
-
-// Animated Logo for splash transition
-const HactuallyLogoAnimated = ({ color = 'white', size = 80 }) => (
-  <svg viewBox="0 0 250 100" width={size} height={size * (100/250)} fill={color}>
-    <style>{`
-      @keyframes moveLeftAndMask {
-        0% { transform: translateX(0); clip-path: inset(0 0 0 0); }
-        100% { transform: translateX(-75px); clip-path: inset(0 75% 0 0); }
-      }
-      @keyframes moveRightAndMask {
-        0% { transform: translateX(0); clip-path: inset(0 0 0 0); }
-        100% { transform: translateX(75px); clip-path: inset(0 0 0 75%); }
-      }
-      .splash-semi-l { animation: moveLeftAndMask 1s linear infinite; }
-      .splash-semi-r { animation: moveRightAndMask 1s linear infinite; }
-      .splash-semi-l-2 { animation: moveLeftAndMask 1s linear infinite 0.33s; }
-      .splash-semi-r-2 { animation: moveRightAndMask 1s linear infinite 0.33s; }
-      .splash-semi-l-3 { animation: moveLeftAndMask 1s linear infinite 0.66s; }
-      .splash-semi-r-3 { animation: moveRightAndMask 1s linear infinite 0.66s; }
-    `}</style>
-    <circle cx="125" cy="50" r="50" />
-    <path className="splash-semi-l" d="M 125 0 L 125 100 A 50 50 0 0 1 125 0 Z" />
-    <path className="splash-semi-r" d="M 125 0 L 125 100 A 50 50 0 0 0 125 0 Z" />
-    <path className="splash-semi-l-2" d="M 125 0 L 125 100 A 50 50 0 0 1 125 0 Z" />
-    <path className="splash-semi-r-2" d="M 125 0 L 125 100 A 50 50 0 0 0 125 0 Z" />
-    <path className="splash-semi-l-3" d="M 125 0 L 125 100 A 50 50 0 0 1 125 0 Z" />
-    <path className="splash-semi-r-3" d="M 125 0 L 125 100 A 50 50 0 0 0 125 0 Z" />
-  </svg>
-);
 
 // Profile images
 const PROFILE_IMAGES = [
@@ -71,25 +41,12 @@ const GALLERY_IMAGES = PEOPLE.map(person => ({
 export default function CheckedInScreen() {
   const navigate = useNavigate();
   const { venueId } = useParams();
-  const [showSplash, setShowSplash] = React.useState(true);
-  const [splashFading, setSplashFading] = React.useState(false);
-
   // Mock venue data (in real app, fetch based on venueId)
   const venue = {
     id: venueId || 1,
     name: 'WHITE Dubai',
     area: 'Meydan',
   };
-
-  // Splash transition on mount
-  React.useEffect(() => {
-    const fadeTimer = setTimeout(() => setSplashFading(true), 1500);
-    const hideTimer = setTimeout(() => setShowSplash(false), 2200);
-    return () => {
-      clearTimeout(fadeTimer);
-      clearTimeout(hideTimer);
-    };
-  }, []);
 
   return (
     <div className="h-full relative overflow-hidden bg-brown-lighter">
@@ -137,17 +94,6 @@ export default function CheckedInScreen() {
         />
       </div>
 
-      {/* Splash takeover transition */}
-      {showSplash && (
-        <div
-          className={cn(
-            "absolute inset-0 z-50 flex items-center justify-center bg-blue transition-all duration-700 ease-out",
-            splashFading ? "opacity-0 scale-110" : "opacity-100 scale-100"
-          )}
-        >
-          <HactuallyLogoAnimated color="#C94A2F" size={280} />
-        </div>
-      )}
     </div>
   );
 }
