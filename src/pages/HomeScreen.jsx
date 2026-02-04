@@ -827,6 +827,10 @@ function VenueModal({ venue, onClose, onCheckIn }) {
           0% { background-position: 200% 0; }
           100% { background-position: -200% 0; }
         }
+        @keyframes shimmerText {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
       `}</style>
 
       {/* Top bar — location pill + close button */}
@@ -932,7 +936,21 @@ function VenueModal({ venue, onClose, onCheckIn }) {
         }}
       >
         <p className="text-brown-lighter text-xs"><span className="font-bold">{venue.peopleCount}</span> people checked in to <span className="font-bold">{venue.name}</span></p>
-        <p className="mt-1 text-brown-lighter text-[10px] italic">It's hactually happening.</p>
+        <p className="mt-1 text-xs italic">
+          <span className="text-brown-lighter">It's </span>
+          <span
+            className="font-bold"
+            style={{
+              background: 'linear-gradient(90deg, rgba(245,241,232,0.6) 0%, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 60%, rgba(245,241,232,0.6) 100%)',
+              backgroundSize: '200% 100%',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              animation: 'shimmerText 2s linear infinite',
+            }}
+          >hactually</span>
+          <span className="text-brown-lighter"> happening.</span>
+        </p>
       </div>
 
       {/* Bottom section — button + credits */}
