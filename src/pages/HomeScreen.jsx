@@ -782,13 +782,13 @@ function VenueModal({ venue, onClose, onCheckIn }) {
     holdStartRef.current = Date.now();
     const tick = () => {
       const p = Math.min((Date.now() - holdStartRef.current) / 2000, 1);
-      setMarqueeSpeed(1 + p * 4);
+      setMarqueeSpeed(1 + p * p * 7);
       if (p < 1) rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
     holdTimerRef.current = setTimeout(() => {
       setHoldComplete(true);
-      setMarqueeSpeed(5);
+      setMarqueeSpeed(8);
       setTimeout(() => {
         if (onCheckIn) onCheckIn(venue);
       }, 300);
@@ -867,7 +867,7 @@ function VenueModal({ venue, onClose, onCheckIn }) {
         style={{ top: '48px', bottom: 'calc(50% + 150px)' }}
       >
         <div className="overflow-hidden">
-          <div className="flex gap-3" style={{ animation: `marqueeLeft ${20 / marqueeSpeed}s linear infinite`, width: 'max-content' }}>
+          <div className="flex gap-3" style={{ animation: `marqueeLeft ${60 / marqueeSpeed}s linear infinite`, width: 'max-content' }}>
             {[...PROFILE_IMAGES, ...PROFILE_IMAGES, ...PROFILE_IMAGES].map((src, i) => (
               <div key={`r1-${i}`} className="h-16 w-16 rounded-full overflow-hidden flex-shrink-0 border-2 border-white/15">
                 <img src={src} alt="" className="h-full w-full object-cover" />
@@ -876,7 +876,7 @@ function VenueModal({ venue, onClose, onCheckIn }) {
           </div>
         </div>
         <div className="overflow-hidden">
-          <div className="flex gap-3" style={{ animation: `marqueeRight ${25 / marqueeSpeed}s linear infinite`, width: 'max-content' }}>
+          <div className="flex gap-3" style={{ animation: `marqueeRight ${70 / marqueeSpeed}s linear infinite`, width: 'max-content' }}>
             {[...PROFILE_IMAGES.slice(4), ...PROFILE_IMAGES.slice(0, 4), ...PROFILE_IMAGES, ...PROFILE_IMAGES].map((src, i) => (
               <div key={`r2-${i}`} className="h-16 w-16 rounded-full overflow-hidden flex-shrink-0 border-2 border-white/15">
                 <img src={src} alt="" className="h-full w-full object-cover" />
