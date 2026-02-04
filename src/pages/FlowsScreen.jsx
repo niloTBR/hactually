@@ -12,9 +12,6 @@ import { cn } from '../lib/utils';
  * ============================================================================
  * HACTUALLY FLOWS - Based on Miro Tech Spec
  * ============================================================================
- *
- * Each flow contains screens with IDs (1A, 1B, etc.)
- * Screens can link to built app routes or external prototypes
  */
 
 const FLOW_SECTIONS = [
@@ -112,38 +109,38 @@ function FlowAccordion({ flow, index, isExpanded, onToggle }) {
   const totalCount = flow.screens.length;
 
   return (
-    <div className="border border-white/10 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-sm">
+    <div className="border border-brown-light/40 rounded-2xl overflow-hidden bg-white shadow-card">
       {/* Accordion Header */}
       <button
         onClick={onToggle}
-        className="w-full flex items-center gap-4 p-4 hover:bg-white/5 transition-colors text-left"
+        className="w-full flex items-center gap-4 p-4 hover:bg-brown-lighter/50 transition-all text-left"
       >
-        <span className="h-8 w-8 rounded-lg bg-white/10 flex items-center justify-center text-white/60 text-sm font-mono flex-shrink-0">
+        <span className="h-8 w-8 rounded-xl bg-blue text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
           {index + 1}
         </span>
         <div className="flex-1 min-w-0">
-          <span className="text-white font-medium">{flow.title}</span>
-          <p className="text-white/40 text-xs">{flow.description}</p>
+          <span className="text-black font-bold text-sm">{flow.title}</span>
+          <p className="text-brown text-xs mt-0.5">{flow.description}</p>
         </div>
         <div className="flex items-center gap-3 flex-shrink-0">
-          <span className="text-xs text-white/40">
-            <span className="text-green-400">{activeCount}</span>/{totalCount}
+          <span className="text-xs text-brown">
+            <span className="text-green font-bold">{activeCount}</span>/{totalCount}
           </span>
           {isExpanded ? (
-            <ChevronDown className="h-5 w-5 text-white/40" />
+            <ChevronDown className="h-5 w-5 text-brown" />
           ) : (
-            <ChevronRight className="h-5 w-5 text-white/40" />
+            <ChevronRight className="h-5 w-5 text-brown/40" />
           )}
         </div>
       </button>
 
       {/* Accordion Content */}
       {isExpanded && (
-        <div className="border-t border-white/10 bg-purple-950/50">
+        <div className="border-t border-brown-light/30 bg-brown-lighter/30">
           {flow.screens.length === 0 ? (
-            <p className="px-4 py-6 text-white/30 text-sm text-center">No screens yet</p>
+            <p className="px-4 py-6 text-brown/50 text-sm text-center">No screens yet</p>
           ) : (
-            <ul className="divide-y divide-white/5">
+            <ul className="divide-y divide-brown-light/20">
               {flow.screens.map((screen) => (
                 <ScreenItem key={screen.id} screen={screen} />
               ))}
@@ -164,11 +161,11 @@ function ScreenItem({ screen }) {
   const hasPrototype = screen.prototype;
 
   const content = (
-    <div className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors">
+    <div className="flex items-center gap-3 px-4 py-3 hover:bg-blue-light/10 transition-colors">
       {/* Screen ID */}
       <span className={cn(
-        "w-10 text-xs font-mono text-center py-1 px-2 rounded",
-        isActive ? "bg-green-500/20 text-green-400" : "bg-white/10 text-white/40"
+        "w-10 text-xs font-mono text-center py-1 px-2 rounded-lg font-bold",
+        isActive ? "bg-green-light text-green" : "bg-brown-light/50 text-brown"
       )}>
         {screen.id}
       </span>
@@ -176,7 +173,7 @@ function ScreenItem({ screen }) {
       {/* Screen Name */}
       <span className={cn(
         "flex-1 text-sm",
-        isActive ? "text-white" : "text-white/60"
+        isActive ? "text-black font-medium" : "text-brown"
       )}>
         {screen.name}
       </span>
@@ -188,7 +185,7 @@ function ScreenItem({ screen }) {
             href={screen.prototype}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-pink-400 hover:text-pink-300 flex items-center gap-1"
+            className="text-xs text-blue hover:text-blue-dark flex items-center gap-1 font-medium"
             onClick={(e) => e.stopPropagation()}
           >
             <ExternalLink className="h-3 w-3" />
@@ -196,9 +193,9 @@ function ScreenItem({ screen }) {
           </a>
         )}
         {isActive ? (
-          <span className="h-2 w-2 rounded-full bg-green-500" />
+          <span className="h-2.5 w-2.5 rounded-full bg-green" />
         ) : (
-          <span className="h-2 w-2 rounded-full bg-white/20" />
+          <span className="h-2.5 w-2.5 rounded-full bg-brown-light" />
         )}
       </div>
     </div>
@@ -221,30 +218,29 @@ function ScreenItem({ screen }) {
  * Flows Screen - Accordion-based flow navigation
  */
 export default function FlowsScreen() {
-  const [expandedFlow, setExpandedFlow] = React.useState(null); // Only one open at a time
+  const [expandedFlow, setExpandedFlow] = React.useState(null);
 
   const toggleFlow = (flowId) => {
     setExpandedFlow(prev => prev === flowId ? null : flowId);
   };
 
-  // Calculate totals
   const totalScreens = FLOW_SECTIONS.reduce((acc, flow) => acc + flow.screens.length, 0);
   const builtScreens = FLOW_SECTIONS.reduce((acc, flow) =>
     acc + flow.screens.filter(s => s.active).length, 0
   );
 
   return (
-    <div className="min-h-screen bg-purple-950">
+    <div className="min-h-screen bg-brown-lighter">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-purple-950/95 backdrop-blur-lg border-b border-white/10">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-brown-light/30 shadow-xs">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-light tracking-widest text-white uppercase">User Stories</h1>
-            <p className="text-xs text-white/40">Hactually MVP - What users can do</p>
+            <span className="text-xl font-black text-blue">hactually</span>
+            <p className="text-xs text-brown mt-0.5">User Stories — MVP</p>
           </div>
           <Link
             to="/design-system"
-            className="flex items-center gap-2 text-white/40 hover:text-pink-400 transition-colors text-sm"
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-light/30 text-blue hover:bg-blue-light/50 transition-colors text-sm font-bold"
           >
             <Eye className="h-4 w-4" />
             <span>Design System</span>
@@ -253,28 +249,28 @@ export default function FlowsScreen() {
       </header>
 
       {/* Content */}
-      <main className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+      <main className="max-w-4xl mx-auto px-6 py-8 space-y-6">
         {/* Stats */}
-        <div className="flex items-center gap-4 text-xs">
+        <div className="flex items-center gap-6 text-xs">
           <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-green-500" />
-            <span className="text-white/60">Built ({builtScreens})</span>
+            <div className="h-2.5 w-2.5 rounded-full bg-green" />
+            <span className="text-brown font-medium">Built ({builtScreens})</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-white/30" />
-            <span className="text-white/40">To Build ({totalScreens - builtScreens})</span>
+            <div className="h-2.5 w-2.5 rounded-full bg-brown-light" />
+            <span className="text-brown/60">To Build ({totalScreens - builtScreens})</span>
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+        <div className="h-2.5 bg-brown-light/40 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-pink-500 to-purple-500 rounded-full transition-all"
+            className="h-full bg-gradient-blue rounded-full transition-all"
             style={{ width: `${(builtScreens / totalScreens) * 100}%` }}
           />
         </div>
-        <p className="text-xs text-white/40 text-center">
-          {Math.round((builtScreens / totalScreens) * 100)}% complete ({builtScreens}/{totalScreens} stories)
+        <p className="text-xs text-brown text-center font-medium">
+          {Math.round((builtScreens / totalScreens) * 100)}% complete — {builtScreens}/{totalScreens} stories
         </p>
 
         {/* Flow Accordions */}
@@ -289,7 +285,6 @@ export default function FlowsScreen() {
             />
           ))}
         </div>
-
       </main>
     </div>
   );
