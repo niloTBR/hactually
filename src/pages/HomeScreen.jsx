@@ -20,7 +20,7 @@ import { cn } from '../lib/utils';
 import StarBorder from '../components/StarBorder';
 
 // Mapbox access token - replace with your own or set via env variable
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoibmlsMGtoIiwiYSI6ImNta3M2ZjZkZTE1MWUzY3M5ZG8xZHI2MWsifQ.ryMm8IK9xAd5MEE6npZM_A';
 
 /**
  * Home Screen - Map Discovery View (2A)
