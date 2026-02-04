@@ -782,13 +782,13 @@ function VenueModal({ venue, onClose, onCheckIn }) {
     holdStartRef.current = Date.now();
     const tick = () => {
       const p = Math.min((Date.now() - holdStartRef.current) / 2000, 1);
-      setMarqueeSpeed(1 + p * p * 7);
+      setMarqueeSpeed(1 + p * p * 4);
       if (p < 1) rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
     holdTimerRef.current = setTimeout(() => {
       setHoldComplete(true);
-      setMarqueeSpeed(8);
+      setMarqueeSpeed(5);
       setTimeout(() => {
         if (onCheckIn) onCheckIn(venue);
       }, 300);
@@ -871,7 +871,7 @@ function VenueModal({ venue, onClose, onCheckIn }) {
         style={{
           top: '48px',
           bottom: 'calc(50% + 150px)',
-          filter: `blur(${Math.max(0, 2.5 - (marqueeSpeed - 1) * 1.5)}px)`,
+          filter: `blur(${Math.max(0, 2.5 - (marqueeSpeed - 1) * 3.2)}px)`,
           transition: marqueeSpeed === 1 ? 'filter 0.3s ease-out' : 'none',
         }}
       >
