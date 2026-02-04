@@ -976,7 +976,10 @@ function VenueModal({ venue, onClose, onCheckIn }) {
               animation: 'shimmerBorder 2s linear infinite',
             }}
           >
-            <div className="w-full h-full rounded-full" style={{ backgroundColor: '#8A8B73' }} />
+            <div className="w-full h-full rounded-full" style={{
+              backgroundColor: holding || holdComplete ? '#5865F2' : '#8A8B73',
+              transition: holding || holdComplete ? 'background-color 2s linear' : 'background-color 0.3s ease-out',
+            }} />
           </div>
 
           {/* Hold fill progress */}
