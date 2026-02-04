@@ -1,11 +1,37 @@
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MapPin, X, Eye, LogOut, RefreshCw } from 'lucide-react';
+import { MapPin, LogOut } from 'lucide-react';
 import { cn } from '../lib/utils';
 import DomeGallery from '../components/DomeGallery';
 
-// Lazy load InfiniteMenu to avoid WebGL issues on initial render
-const InfiniteMenu = React.lazy(() => import('../components/InfiniteMenu'));
+// Animated Logo for splash transition
+const HactuallyLogoAnimated = ({ color = 'white', size = 80 }) => (
+  <svg viewBox="0 0 250 100" width={size} height={size * (100/250)} fill={color}>
+    <style>{`
+      @keyframes moveLeftAndMask {
+        0% { transform: translateX(0); clip-path: inset(0 0 0 0); }
+        100% { transform: translateX(-75px); clip-path: inset(0 75% 0 0); }
+      }
+      @keyframes moveRightAndMask {
+        0% { transform: translateX(0); clip-path: inset(0 0 0 0); }
+        100% { transform: translateX(75px); clip-path: inset(0 0 0 75%); }
+      }
+      .splash-semi-l { animation: moveLeftAndMask 1s linear infinite; }
+      .splash-semi-r { animation: moveRightAndMask 1s linear infinite; }
+      .splash-semi-l-2 { animation: moveLeftAndMask 1s linear infinite 0.33s; }
+      .splash-semi-r-2 { animation: moveRightAndMask 1s linear infinite 0.33s; }
+      .splash-semi-l-3 { animation: moveLeftAndMask 1s linear infinite 0.66s; }
+      .splash-semi-r-3 { animation: moveRightAndMask 1s linear infinite 0.66s; }
+    `}</style>
+    <circle cx="125" cy="50" r="50" />
+    <path className="splash-semi-l" d="M 125 0 L 125 100 A 50 50 0 0 1 125 0 Z" />
+    <path className="splash-semi-r" d="M 125 0 L 125 100 A 50 50 0 0 0 125 0 Z" />
+    <path className="splash-semi-l-2" d="M 125 0 L 125 100 A 50 50 0 0 1 125 0 Z" />
+    <path className="splash-semi-r-2" d="M 125 0 L 125 100 A 50 50 0 0 0 125 0 Z" />
+    <path className="splash-semi-l-3" d="M 125 0 L 125 100 A 50 50 0 0 1 125 0 Z" />
+    <path className="splash-semi-r-3" d="M 125 0 L 125 100 A 50 50 0 0 0 125 0 Z" />
+  </svg>
+);
 
 // Profile images
 const PROFILE_IMAGES = [
@@ -19,7 +45,7 @@ const PROFILE_IMAGES = [
   '/images/arrul-lin-sYhUhse5uT8-unsplash.jpg',
 ];
 
-// Mock people data with Twitter-style bios and interests
+// Mock people data
 const PEOPLE = [
   { id: 1, name: 'Sophia', age: 24, avatar: PROFILE_IMAGES[0], bio: 'chasing sunsets & good conversations', interests: ['Travel', 'Wine', 'Art'] },
   { id: 2, name: 'Emma', age: 26, avatar: PROFILE_IMAGES[1], bio: 'probably at a coffee shop right now', interests: ['Coffee', 'Books', 'Yoga'] },
@@ -31,233 +57,22 @@ const PEOPLE = [
   { id: 8, name: 'Alex', age: 29, avatar: PROFILE_IMAGES[7], bio: 'professional overthinker, amateur chef', interests: ['Gaming', 'Crypto', 'Sneakers'] },
 ];
 
-// Convert PEOPLE to DomeGallery format with data attached
+// Convert PEOPLE to DomeGallery format
 const GALLERY_IMAGES = PEOPLE.map(person => ({
   src: person.avatar,
   alt: person.name,
-  data: person // Attach full person data
-}));
-
-// Convert PEOPLE to InfiniteMenu format
-const MENU_ITEMS = PEOPLE.map(person => ({
-  image: person.avatar,
-  title: person.name,
-  description: person.bio,
   data: person
 }));
 
 /**
- * Profile Card with Tilt Effect and Light Reflection
- * Inspired by ReactBits ProfileCard
- */
-function ProfileCard({ person, onClose, onSpot, isSpotted }) {
-  const cardRef = React.useRef(null);
-  const [tilt, setTilt] = React.useState({ x: 0, y: 0 });
-  const [mousePos, setMousePos] = React.useState({ x: 50, y: 50 });
-  const [isHovering, setIsHovering] = React.useState(false);
-
-  const handleMouseMove = (e) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    // Calculate tilt based on mouse position from center
-    const rotateX = ((e.clientY - centerY) / (rect.height / 2)) * -12;
-    const rotateY = ((e.clientX - centerX) / (rect.width / 2)) * 12;
-
-    // Calculate mouse position as percentage for light effect
-    const mouseX = ((e.clientX - rect.left) / rect.width) * 100;
-    const mouseY = ((e.clientY - rect.top) / rect.height) * 100;
-
-    setTilt({ x: rotateX, y: rotateY });
-    setMousePos({ x: mouseX, y: mouseY });
-  };
-
-  const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0 });
-    setMousePos({ x: 50, y: 50 });
-    setIsHovering(false);
-  };
-
-  const handleMouseEnter = () => {
-    setIsHovering(true);
-  };
-
-  if (!person) return null;
-
-  return (
-    <div className="absolute inset-0 z-50 flex items-center justify-center p-6">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-xl"
-        onClick={onClose}
-      />
-
-      {/* Card with tilt effect */}
-      <div
-        ref={cardRef}
-        className="relative w-full max-w-xs animate-scale-in"
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          perspective: '1200px',
-        }}
-      >
-        <div
-          className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl transition-all duration-200 ease-out"
-          style={{
-            background: 'linear-gradient(145deg, rgba(30,30,35,0.9) 0%, rgba(15,15,18,0.95) 100%)',
-            transform: isHovering
-              ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(1.02)`
-              : 'rotateX(0deg) rotateY(0deg) scale(1)',
-            transformStyle: 'preserve-3d',
-          }}
-        >
-          {/* Dynamic light reflection that follows mouse */}
-          <div
-            className="absolute inset-0 pointer-events-none transition-opacity duration-150 z-20"
-            style={{
-              background: `radial-gradient(circle 150px at ${mousePos.x}% ${mousePos.y}%, rgba(255,255,255,0.12) 0%, transparent 100%)`,
-              opacity: isHovering ? 1 : 0,
-            }}
-          />
-
-          {/* Subtle gradient border glow */}
-          <div
-            className="absolute inset-0 pointer-events-none z-10 rounded-3xl transition-opacity duration-300"
-            style={{
-              background: `radial-gradient(circle at ${mousePos.x}% ${mousePos.y}%, rgba(236,72,153,0.15) 0%, transparent 50%)`,
-              opacity: isHovering ? 1 : 0,
-            }}
-          />
-
-          {/* Close button */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 z-30 h-8 w-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center hover:bg-black/60 transition-colors"
-          >
-            <X className="h-4 w-4 text-white/70" />
-          </button>
-
-          {/* Profile image with smooth fade into card */}
-          <div className="relative h-64 overflow-hidden">
-            <img
-              src={person.avatar}
-              alt={person.name}
-              className="h-full w-full object-cover"
-            />
-            {/* Smooth gradient fade into card background */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background: 'linear-gradient(to bottom, transparent 0%, transparent 30%, rgba(15,15,18,0.4) 50%, rgba(15,15,18,0.85) 75%, rgb(15,15,18) 100%)',
-              }}
-            />
-            {/* Spotted badge on image */}
-            {isSpotted && (
-              <div className="absolute top-4 left-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 text-white text-xs font-medium">
-                <Eye className="h-3 w-3" />
-                Spotted
-              </div>
-            )}
-          </div>
-
-          {/* Content area - blends with image fade */}
-          <div className="px-5 pb-5 -mt-16 relative z-10">
-            {/* Name & Age */}
-            <h2 className="text-white text-2xl font-bold">
-              {person.name}, {person.age}
-            </h2>
-
-            {/* Twitter-style bio */}
-            <p className="text-white/50 text-sm mt-1 italic">
-              "{person.bio}"
-            </p>
-
-            {/* Interest pills - tiny & elegant */}
-            {person.interests && (
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                {person.interests.map((interest) => (
-                  <span
-                    key={interest}
-                    className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-white/5 text-white/40 border border-white/10"
-                  >
-                    {interest}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* SPOT Button */}
-            <div className="mt-5">
-              {isSpotted ? (
-                <div className="text-center py-3">
-                  <div className="flex items-center justify-center gap-2 text-pink-400">
-                    <Eye className="h-4 w-4" />
-                    <span className="text-sm font-medium">You spotted {person.name}</span>
-                  </div>
-                  <p className="text-white/30 text-[10px] mt-1">
-                    They'll be notified of your interest
-                  </p>
-                </div>
-              ) : (
-                <>
-                  <div
-                    className="relative h-11 rounded-full p-[1px]"
-                    style={{
-                      background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(59, 130, 246), rgb(139, 92, 246), rgb(236, 72, 153))',
-                      backgroundSize: '200% 100%',
-                      animation: 'shimmerBorder 3s linear infinite',
-                    }}
-                  >
-                    <button
-                      onClick={() => onSpot(person)}
-                      className={cn(
-                        "w-full h-full rounded-full",
-                        "bg-[#0f0f12] text-white text-sm font-semibold",
-                        "flex items-center justify-center gap-2",
-                        "active:scale-[0.98] transition-transform",
-                        "hover:bg-[#1a1a20]"
-                      )}
-                    >
-                      <Eye className="h-4 w-4" />
-                      SPOT
-                    </button>
-                  </div>
-                  <p className="text-center text-white/30 text-[10px] mt-2">
-                    Let them know you're interested
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* CSS for shimmer border animation */}
-      <style>{`
-        @keyframes shimmerBorder {
-          0% { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-/**
- * Checked In Screen - Original DomeGallery version
+ * Checked In Screen - Dome Gallery of people at venue
+ * Hactually 2.0 Branding - Light theme
  */
 export default function CheckedInScreen() {
   const navigate = useNavigate();
   const { venueId } = useParams();
-  const [selectedPerson, setSelectedPerson] = React.useState(null);
-  const [spotted, setSpotted] = React.useState([]);
-  const [viewMode, setViewMode] = React.useState('dome'); // 'dome' or 'sphere'
-  const [activeIndex, setActiveIndex] = React.useState(0);
-  const [isMoving, setIsMoving] = React.useState(false);
+  const [showSplash, setShowSplash] = React.useState(true);
+  const [splashFading, setSplashFading] = React.useState(false);
 
   // Mock venue data (in real app, fetch based on venueId)
   const venue = {
@@ -266,236 +81,73 @@ export default function CheckedInScreen() {
     area: 'Meydan',
   };
 
-  const handleSpot = (person) => {
-    if (!spotted.includes(person.id)) {
-      setSpotted([...spotted, person.id]);
-    }
-  };
-
-  // Get active person for sphere view
-  const activePerson = PEOPLE[activeIndex % PEOPLE.length];
-  const isActiveSpotted = activePerson ? spotted.includes(activePerson.id) : false;
+  // Splash transition on mount
+  React.useEffect(() => {
+    const fadeTimer = setTimeout(() => setSplashFading(true), 1500);
+    const hideTimer = setTimeout(() => setShowSplash(false), 2200);
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(hideTimer);
+    };
+  }, []);
 
   return (
-    <div className="h-full relative overflow-hidden bg-[#0a0a0f]">
-      {/* Background gradient */}
+    <div className="h-full relative overflow-hidden bg-brown-lighter">
+      {/* Subtle background accents */}
       <div
         className="absolute inset-0"
         style={{
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 50%), radial-gradient(ellipse at 50% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 50%)',
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(88,101,242,0.08) 0%, transparent 50%), radial-gradient(ellipse at 50% 100%, rgba(224,90,61,0.06) 0%, transparent 50%)',
         }}
       />
 
-
       {/* Header - Location bar with venue name */}
       <div className="absolute top-0 left-0 right-0 z-30 pt-12 px-4">
-        <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-white/10 backdrop-blur-xl">
-          <MapPin className="h-4 w-4 text-pink-400" />
-          <span className="flex-1 text-white text-sm font-medium">
+        <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-white/80 backdrop-blur-xl border border-brown-light/30 shadow-card">
+          <MapPin className="h-4 w-4 text-blue" />
+          <span className="flex-1 text-black text-sm font-bold">
             {venue.name}
           </span>
 
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 hover:bg-red-500/20 transition-colors group"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-brown-lighter hover:bg-orange-light transition-colors group"
           >
-            <span className="text-white/40 text-xs group-hover:text-red-400 transition-colors">Leave</span>
-            <LogOut className="h-3.5 w-3.5 text-white/40 group-hover:text-red-400 transition-colors" />
+            <span className="text-brown text-xs group-hover:text-orange-dark transition-colors">Leave</span>
+            <LogOut className="h-3.5 w-3.5 text-brown group-hover:text-orange-dark transition-colors" />
           </button>
         </div>
       </div>
 
-      {/* View Mode: Dome Gallery */}
-      {viewMode === 'dome' && (
-        <div className="absolute -inset-10 scale-125">
-          <DomeGallery
-            images={GALLERY_IMAGES}
-            grayscale={false}
-            fit={1.2}
-            minRadius={300}
-            segments={25}
-            overlayBlurColor="#0a0a0f"
-            imageBorderRadius="50%"
-            autoRotate={!selectedPerson}
-            autoRotateSpeed={0.15}
-            dynamicPresence={true}
-            presenceDuration={[8, 15]}
-            spottedIds={spotted}
-            focusedImage={selectedPerson?.avatar}
-            onImageClick={(item) => {
-              const person = PEOPLE.find(p => p.avatar === item.src);
-              if (person) {
-                setSelectedPerson(prev => prev?.id === person.id ? null : person);
-              }
-            }}
-          />
-        </div>
-      )}
+      {/* Dome Gallery */}
+      <div className="absolute -inset-10 scale-125">
+        <DomeGallery
+          images={GALLERY_IMAGES}
+          grayscale={false}
+          fit={1.2}
+          minRadius={300}
+          segments={25}
+          overlayBlurColor="#F5F1E8"
+          imageBorderRadius="50%"
+          autoRotate={true}
+          autoRotateSpeed={0.15}
+          dynamicPresence={true}
+          presenceDuration={[8, 15]}
+          spottedIds={[]}
+        />
+      </div>
 
-      {/* View Mode: 3D Sphere (InfiniteMenu) */}
-      {viewMode === 'sphere' && (
-        <React.Suspense fallback={
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-white/50 text-sm">Loading 3D view...</div>
-          </div>
-        }>
-          {/* Sphere takes upper portion */}
-          <div className="absolute inset-x-0 top-0 h-[55%]">
-            <InfiniteMenu
-              items={MENU_ITEMS}
-              scale={1.0}
-              onActiveChange={(index) => setActiveIndex(index)}
-              onMovementChange={setIsMoving}
-            />
-          </div>
-
-          {/* Active Profile Info - Below the sphere */}
-          <div
-            className={cn(
-              "absolute inset-x-0 bottom-0 h-[45%] flex flex-col items-center justify-start pt-4 px-6 z-10",
-              "transition-all duration-300",
-              isMoving ? "opacity-30 translate-y-4" : "opacity-100 translate-y-0"
-            )}
-          >
-            {activePerson && (
-              <>
-                {/* Name & Age */}
-                <h2 className="text-white text-2xl font-bold text-center">
-                  {activePerson.name}, {activePerson.age}
-                </h2>
-
-                {/* Bio */}
-                <p className="text-white/50 text-sm mt-2 text-center italic max-w-[280px]">
-                  "{activePerson.bio}"
-                </p>
-
-                {/* Interest pills */}
-                <div className="flex flex-wrap justify-center gap-2 mt-4">
-                  {activePerson.interests?.map((interest) => (
-                    <span
-                      key={interest}
-                      className="px-3 py-1 rounded-full text-xs font-medium bg-white/10 text-white/60 border border-white/10"
-                    >
-                      {interest}
-                    </span>
-                  ))}
-                </div>
-
-                {/* SPOT Button */}
-                <div className="mt-6 w-full max-w-xs">
-                  {isActiveSpotted ? (
-                    <div className="text-center py-3">
-                      <div className="flex items-center justify-center gap-2 text-pink-400">
-                        <Eye className="h-5 w-5" />
-                        <span className="font-medium">You spotted {activePerson.name}</span>
-                      </div>
-                      <p className="text-white/40 text-xs mt-2">
-                        They'll be notified of your interest
-                      </p>
-                    </div>
-                  ) : (
-                    <>
-                      <div
-                        className="relative h-12 rounded-full p-[2px]"
-                        style={{
-                          background: 'linear-gradient(90deg, rgb(236, 72, 153), rgb(139, 92, 246), rgb(59, 130, 246), rgb(139, 92, 246), rgb(236, 72, 153))',
-                          backgroundSize: '200% 100%',
-                          animation: 'shimmerBorder 3s linear infinite',
-                        }}
-                      >
-                        <button
-                          onClick={() => handleSpot(activePerson)}
-                          className={cn(
-                            "w-full h-full rounded-full",
-                            "bg-[#0f0f12] text-white text-sm font-semibold",
-                            "flex items-center justify-center gap-2",
-                            "active:scale-[0.98] transition-transform",
-                            "hover:bg-[#1a1a20]"
-                          )}
-                        >
-                          <Eye className="h-4 w-4" />
-                          SPOT {activePerson.name}
-                        </button>
-                      </div>
-                      <p className="text-center text-white/30 text-xs mt-2">
-                        Let them know you're interested
-                      </p>
-                    </>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
-        </React.Suspense>
-      )}
-
-      {/* Bottom section - hint or selected person info */}
-      {viewMode === 'dome' && (
-        <div className="absolute bottom-0 left-0 right-0 z-20">
-          {selectedPerson ? (
-            <div className="px-6 pb-8 pt-4 text-center">
-              <h2 className="text-white text-xl font-bold">
-                {selectedPerson.name}, {selectedPerson.age}
-              </h2>
-              <p className="text-white/50 text-sm mt-1 italic">
-                "{selectedPerson.bio}"
-              </p>
-              <div className="flex flex-wrap justify-center gap-2 mt-3">
-                {selectedPerson.interests?.map((interest) => (
-                  <span
-                    key={interest}
-                    className="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-white/10 text-white/50 border border-white/10"
-                  >
-                    {interest}
-                  </span>
-                ))}
-              </div>
-              {!spotted.includes(selectedPerson.id) ? (
-                <button
-                  onClick={() => handleSpot(selectedPerson)}
-                  className="mt-4 px-6 py-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white text-sm font-semibold"
-                >
-                  <Eye className="h-4 w-4 inline mr-2" />
-                  SPOT
-                </button>
-              ) : (
-                <div className="mt-3 flex items-center justify-center gap-2 text-pink-400">
-                  <Eye className="h-4 w-4" />
-                  <span className="text-sm">Spotted</span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="flex justify-center pb-8">
-              <div className="px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10">
-                <p className="text-white/50 text-xs">Tap on someone to see their profile</p>
-              </div>
-            </div>
+      {/* Splash takeover transition */}
+      {showSplash && (
+        <div
+          className={cn(
+            "absolute inset-0 z-50 flex items-center justify-center bg-blue transition-all duration-700 ease-out",
+            splashFading ? "opacity-0 scale-110" : "opacity-100 scale-100"
           )}
+        >
+          <HactuallyLogoAnimated color="#C94A2F" size={280} />
         </div>
       )}
-
-      {/* Hint text - for sphere view */}
-      {viewMode === 'sphere' && (
-        <div className="absolute bottom-6 left-0 right-0 flex justify-center z-20">
-          <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10">
-            <p className="text-white/50 text-xs">
-              Swipe to browse
-            </p>
-            <button className="h-6 w-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-              <RefreshCw className="h-3 w-3 text-white/50" />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* CSS for shimmer border animation */}
-      <style>{`
-        @keyframes shimmerBorder {
-          0% { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
-        }
-      `}</style>
     </div>
   );
 }

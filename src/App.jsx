@@ -88,11 +88,7 @@ export default function App() {
           {/* Onboarding / Welcome */}
           <Route
             path="/"
-            element={
-              <AuthRoute>
-                <WelcomeScreen />
-              </AuthRoute>
-            }
+            element={<FlowsScreen />}
           />
           <Route
             path="/auth/welcome"
@@ -146,8 +142,8 @@ export default function App() {
           {/* Legacy redirects */}
           <Route path="/styleguide" element={<Navigate to="/design-system" replace />} />
 
-          {/* Default redirect to welcome */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* Default redirect to flows */}
+          <Route path="*" element={<Navigate to="/flows" replace />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
