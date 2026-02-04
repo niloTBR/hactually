@@ -67,7 +67,7 @@ function AuthRoute({ children }) {
 function AppLayout({ children }) {
   const location = useLocation();
   // Design system pages that don't need phone frame
-  const isDesignSystem = location.pathname === '/design-system' || location.pathname === '/flows';
+  const isDesignSystem = location.pathname === '/design-system' || location.pathname === '/flows' || location.pathname === '/';
 
   // Don't wrap design system pages in phone frame
   if (isDesignSystem) {
