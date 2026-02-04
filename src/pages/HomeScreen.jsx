@@ -695,7 +695,7 @@ function VenueCard({ venue, depth = 0 }) {
       {/* Content at bottom */}
       <div className="relative z-10 flex flex-col justify-end min-h-[130px]">
         <div className="flex-1" />
-        <div className="rounded-t-2xl p-4" style={{ background: 'rgba(255,255,255,0.08)' }}>
+        <div className="p-4">
           <div className="flex items-center gap-3">
             {/* Avatar stack */}
             <div className="flex flex-shrink-0">
