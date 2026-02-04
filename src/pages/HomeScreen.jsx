@@ -818,14 +818,20 @@ function VenueModal({ venue, onClose, onCheckIn }) {
         }
       `}</style>
 
-      {/* Close button — top edge */}
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 z-30 h-10 w-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
-        style={{ backgroundColor: 'rgba(245,241,232,0.15)' }}
-      >
-        <X className="h-5 w-5 text-brown-lighter" />
-      </button>
+      {/* Top bar — location pill + close button */}
+      <div className="absolute top-4 left-4 right-4 z-30 flex items-center justify-between">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ backgroundColor: 'rgba(245,241,232,0.15)' }}>
+          <MapPin className="h-3 w-3 text-brown-lighter/70" />
+          <span className="text-brown-lighter/70 text-[11px] font-medium">{venue.area}</span>
+        </div>
+        <button
+          onClick={onClose}
+          className="h-10 w-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
+          style={{ backgroundColor: 'rgba(245,241,232,0.15)' }}
+        >
+          <X className="h-5 w-5 text-brown-lighter" />
+        </button>
+      </div>
 
       {/* Scrolling profile rows — between top edge and venue circle */}
       <style>{`
