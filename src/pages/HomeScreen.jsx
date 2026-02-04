@@ -898,17 +898,16 @@ function VenueModal({ venue, onClose, onCheckIn }) {
         </div>
       </div>
 
-      {/* Venue name + type — below the circle */}
-      <div
-        className="absolute left-0 right-0 flex flex-col items-center"
-        style={{ top: 'calc(50% + 160px)', animation: 'fadeInUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both' }}
-      >
-        <p className="text-brown-lighter/50 text-xs">{venue.peopleCount} people checked in to</p>
-        <h2 className="mt-0.5 text-brown-lighter text-sm font-bold">{venue.name}</h2>
-      </div>
-
-      {/* Bottom section — button + credits at bottom edge */}
+      {/* Bottom section — venue info + button + credits */}
       <div className="absolute bottom-10 left-0 right-0 flex flex-col items-center px-8">
+        {/* Venue info — centered between circle and button */}
+        <div
+          className="mb-6 text-center"
+          style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both' }}
+        >
+          <p className="text-brown-lighter/50 text-xs">{venue.peopleCount} people checked in to</p>
+          <h2 className="mt-0.5 text-brown-lighter text-sm font-bold">{venue.name}</h2>
+        </div>
         {/* Press & Hold button */}
         <div
           className="w-full max-w-[280px] relative h-12 rounded-full overflow-hidden"
