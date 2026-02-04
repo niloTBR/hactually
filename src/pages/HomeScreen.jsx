@@ -918,8 +918,8 @@ function VenueModal({ venue, onClose, onCheckIn }) {
           className="mb-6 text-center"
           style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both' }}
         >
-          <p className="text-brown-lighter/50 text-xs">{venue.peopleCount} people checked in to <span className="text-brown-lighter font-bold">{venue.name}</span></p>
-          <p className="mt-1 text-brown-lighter/30 text-[10px] italic">It's hactually happening.</p>
+          <p className="text-brown-lighter text-xs"><span className="font-bold">{venue.peopleCount}</span> people checked in to <span className="font-bold">{venue.name}</span></p>
+          <p className="mt-1 text-brown-lighter text-[10px] italic">It's hactually happening.</p>
         </div>
         {/* Press & Hold button */}
         <div
