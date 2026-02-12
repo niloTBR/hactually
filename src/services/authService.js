@@ -41,6 +41,9 @@ const findUserByEmail = (email) => {
 // Generate a simple user ID
 const generateId = () => `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
+// Helper to detect if identifier is email or phone
+const isEmail = (identifier) => identifier && identifier.includes('@');
+
 export const authService = {
   /**
    * Login with OAuth provider (Apple, Google) or phone
@@ -79,24 +82,32 @@ export const authService = {
   },
 
   /**
-   * Send OTP to phone number
+   * Send OTP to phone number or email
    */
-  async sendOTP(phone) {
+  async sendOTP(identifier) {
     await delay(600);
 
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
+    // Determine if it's email or phone
+    const type = isEmail(identifier) ? 'email' : 'phone';
+
     // Store OTP temporarily (in real app, this would be server-side)
-    const otpData = { phone, otp, expires: Date.now() + 5 * 60 * 1000 }; // 5 min expiry
+    const otpData = {
+      identifier,
+      type,
+      otp,
+      expires: Date.now() + 5 * 60 * 1000 // 5 min expiry
+    };
     localStorage.setItem(OTP_KEY, JSON.stringify(otpData));
 
     // In development, log the OTP
-    console.log(`[DEV] OTP for ${phone}: ${otp}`);
+    console.log(`[DEV] OTP for ${identifier}: ${otp}`);
 
     return {
       success: true,
-      message: 'OTP sent successfully',
+      message: `OTP sent to ${type === 'email' ? 'your email' : 'your phone'}`,
       // For development, include OTP in response
       ...(import.meta.env.DEV && { devOTP: otp })
     };
@@ -104,8 +115,9 @@ export const authService = {
 
   /**
    * Verify OTP and login/register user
+   * Works with both email and phone
    */
-  async verifyOTP(phone, otp) {
+  async verifyOTP(identifier, otp) {
     await delay(600);
 
     // Check stored OTP
@@ -115,7 +127,7 @@ export const authService = {
     }
 
     const otpData = JSON.parse(stored);
-    if (otpData.phone !== phone || otpData.otp !== otp) {
+    if (otpData.identifier !== identifier || otpData.otp !== otp) {
       return { success: false, error: 'Invalid OTP. Please try again.' };
     }
 
@@ -127,15 +139,18 @@ export const authService = {
     // Clear OTP after successful verification
     localStorage.removeItem(OTP_KEY);
 
+    // Determine if it's email or phone
+    const isEmailAuth = isEmail(identifier);
+
     // Find or create user
-    let user = findUserByPhone(phone);
+    let user = isEmailAuth ? findUserByEmail(identifier) : findUserByPhone(identifier);
     const isNewUser = !user;
 
     if (!user) {
       user = {
         id: generateId(),
-        phone,
-        provider: 'phone',
+        ...(isEmailAuth ? { email: identifier } : { phone: identifier }),
+        provider: isEmailAuth ? 'email' : 'phone',
         createdAt: new Date().toISOString(),
         onboardingComplete: false,
         credits: 5,
@@ -206,6 +221,15 @@ export const authService = {
   async checkPhone(phone) {
     await delay(300);
     const user = findUserByPhone(phone);
+    return { exists: !!user };
+  },
+
+  /**
+   * Check if email is registered
+   */
+  async checkEmail(email) {
+    await delay(300);
+    const user = findUserByEmail(email);
     return { exists: !!user };
   }
 };

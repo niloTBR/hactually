@@ -5,6 +5,8 @@ import { useAuthStore } from './store/authStore';
 // Auth screens
 import {
   WelcomeScreen,
+  AuthOptionsScreen,
+  EmailAuthScreen,
   LoginScreen,
   OTPScreen,
   ProfileSetupScreen,
@@ -16,6 +18,8 @@ import HomeScreen from './pages/HomeScreen';
 import FlowsScreen from './pages/FlowsScreen';
 import MatchScreen from './pages/MatchScreen';
 import CheckedInScreen from './pages/CheckedInScreen';
+import ProfileScreen from './pages/ProfileScreen';
+import LogoScreen from './pages/LogoScreen';
 
 // Design System
 import StyleGuide from './StyleGuide';
@@ -36,7 +40,7 @@ function ProtectedRoute({ children }) {
 
   // If authenticated but onboarding not complete, redirect to appropriate step
   if (!user?.onboardingComplete) {
-    if (!user?.name || !user?.gender) {
+    if (!user?.name || !user?.nationality) {
       return <Navigate to="/auth/profile-setup" replace />;
     }
     if (!user?.locationPermission) {
@@ -67,7 +71,7 @@ function AuthRoute({ children }) {
 function AppLayout({ children }) {
   const location = useLocation();
   // Design system pages that don't need phone frame
-  const isDesignSystem = location.pathname === '/design-system' || location.pathname === '/flows' || location.pathname === '/';
+  const isDesignSystem = location.pathname === '/design-system' || location.pathname === '/flows' || location.pathname === '/' || location.pathname === '/logo';
 
   // Don't wrap design system pages in phone frame
   if (isDesignSystem) {
@@ -99,7 +103,27 @@ export default function App() {
             }
           />
 
-          {/* Auth Routes */}
+          {/* Auth Options (new flow) */}
+          <Route
+            path="/auth/options"
+            element={
+              <AuthRoute>
+                <AuthOptionsScreen />
+              </AuthRoute>
+            }
+          />
+
+          {/* Email Auth (new flow) */}
+          <Route
+            path="/auth/email"
+            element={
+              <AuthRoute>
+                <EmailAuthScreen />
+              </AuthRoute>
+            }
+          />
+
+          {/* Legacy Auth Routes */}
           <Route
             path="/auth/login"
             element={
@@ -116,10 +140,14 @@ export default function App() {
               </AuthRoute>
             }
           />
+
+          {/* Profile Setup */}
           <Route
             path="/auth/profile-setup"
             element={<ProfileSetupScreen />}
           />
+
+          {/* Location Permission */}
           <Route
             path="/auth/location"
             element={<LocationScreen />}
@@ -134,6 +162,9 @@ export default function App() {
           {/* Checked In Screen */}
           <Route path="/checked-in/:venueId" element={<CheckedInScreen />} />
           <Route path="/checked-in" element={<CheckedInScreen />} />
+
+          {/* Profile Screen */}
+          <Route path="/profile" element={<ProfileScreen />} />
 
           {/* Design System (hidden from normal flow, accessible via direct URL) */}
           <Route path="/design-system" element={<StyleGuide />} />

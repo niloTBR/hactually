@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Eye,
   ChevronDown,
   ChevronRight,
   ExternalLink,
+  LogOut,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { useAuthStore } from '../store/authStore';
 
 /**
  * ============================================================================
@@ -20,10 +22,10 @@ const FLOW_SECTIONS = [
     title: 'Onboarding & Account Creation',
     description: 'Allows the user to understand the value proposition, securely create their account, and build a profile that attracts the right connections.',
     screens: [
-      { id: '1A', name: 'See the app introduction and understand what Hactually is about' },
-      { id: '1B', name: 'Sign up or log in with my phone number' },
-      { id: '1C', name: 'Set up my Hactually public profile' },
-      { id: '1D', name: 'Set up my privacy preferences' },
+      { id: '1A', name: 'See the app introduction and understand what Hactually is about', path: '/auth/welcome', active: true },
+      { id: '1B', name: 'Sign up or log in with email', path: '/auth/options', active: true },
+      { id: '1C', name: 'Set up my Hactually public profile', path: '/auth/profile-setup', active: true },
+      { id: '1D', name: 'Enable location permissions', path: '/auth/location', active: true },
     ],
   },
   {
@@ -218,10 +220,17 @@ function ScreenItem({ screen }) {
  * Flows Screen - Accordion-based flow navigation
  */
 export default function FlowsScreen() {
+  const navigate = useNavigate();
+  const { logout, isAuthenticated } = useAuthStore();
   const [expandedFlow, setExpandedFlow] = React.useState(null);
 
   const toggleFlow = (flowId) => {
     setExpandedFlow(prev => prev === flowId ? null : flowId);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/auth/welcome');
   };
 
   const totalScreens = FLOW_SECTIONS.reduce((acc, flow) => acc + flow.screens.length, 0);
@@ -238,13 +247,24 @@ export default function FlowsScreen() {
             <span className="text-xl font-black text-blue">hactually</span>
             <p className="text-xs text-brown mt-0.5">User Stories — MVP</p>
           </div>
-          <Link
-            to="/design-system"
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-light/30 text-blue hover:bg-blue-light/50 transition-colors text-sm font-bold"
-          >
-            <Eye className="h-4 w-4" />
-            <span>Design System</span>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/design-system"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-light/30 text-blue hover:bg-blue-light/50 transition-colors text-sm font-bold"
+            >
+              <Eye className="h-4 w-4" />
+              <span>Design System</span>
+            </Link>
+            {isAuthenticated && (
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-orange/10 text-orange hover:bg-orange/20 transition-colors text-sm font-bold"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Logout</span>
+              </button>
+            )}
+          </div>
         </div>
       </header>
 
