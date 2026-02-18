@@ -32,8 +32,8 @@ const ProfileRow = ({ images, right, speed = 40 }) => (
   </div>
 );
 
-const BlurText = ({ text }) => (
-  <span className="flex flex-wrap gap-x-2">
+const BlurText = ({ text, center }) => (
+  <span className={`flex flex-wrap gap-x-2 ${center ? 'justify-center' : ''}`}>
     {text.split(' ').map((word, i) => (
       <span key={i} className={`animate-blur-reveal ${word.toLowerCase() === 'hactually' ? 'shimmer-text' : ''}`} style={{ animationDelay: `${i * 80}ms` }}>
         {word}
@@ -110,7 +110,7 @@ export default function WelcomeScreen() {
             <ProfileRow images={[...PROFILES.slice(4), ...PROFILES.slice(0, 4)]} right speed={50} />
           </div>
           <div className="flex-1 flex items-center justify-center px-4">
-            <p className="text-blue-light text-2xl font-bold text-center leading-tight"><BlurText text={current.text} /></p>
+            <p className="text-blue-light text-2xl font-bold text-center leading-tight"><BlurText text={current.text} center /></p>
           </div>
           <div className="flex flex-col gap-3 pb-4" style={{ mask: 'linear-gradient(transparent, black)', WebkitMask: 'linear-gradient(transparent, black)' }}>
             <ProfileRow images={[...PROFILES.slice(2), ...PROFILES.slice(0, 2)]} speed={55} />
