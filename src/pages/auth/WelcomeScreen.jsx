@@ -134,7 +134,7 @@ export default function WelcomeScreen() {
             <ProfileRow images={[...PROFILES.slice(4), ...PROFILES.slice(0, 4)]} right speed={50} />
           </div>
           <div className="flex-1 flex items-center justify-center px-4">
-            <p className="text-blue-light text-[32px] font-bold text-center leading-tight"><BlurText lines={current.lines} center /></p>
+            <p className="text-blue-light text-[26px] font-bold text-center leading-tight"><BlurText lines={current.lines} center /></p>
           </div>
           <div className="flex flex-col gap-3" style={{ mask: 'linear-gradient(transparent, black)', WebkitMask: 'linear-gradient(transparent, black)' }}>
             <ProfileRow images={[...PROFILES.slice(2), ...PROFILES.slice(0, 2)]} speed={55} />
