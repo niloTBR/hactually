@@ -14,10 +14,10 @@ const PROFILES = [
 ];
 
 const SLIDES = [
-  { text: "You've shared a look with someone before.", video: '/Hactually%20Videos/Video_1.mp4' },
-  { text: "The moment was real. Acting on it wasn't easy.", video: '/Hactually%20Videos/Video_2.mp4' },
-  { text: 'continue the moment with hactually', profiles: true },
-  { text: 'Meet the ones you almost missed!', video: '/Hactually%20Videos/Video_4.mp4', final: true },
+  { lines: ["You've", "shared a look with someone before."], video: '/Hactually%20Videos/Video_1.mp4' },
+  { lines: ["The moment was real.", "Acting on it wasn't easy."], video: '/Hactually%20Videos/Video_2.mp4' },
+  { lines: ["continue the moment", "with hactually"], profiles: true },
+  { lines: ["Meet the ones", "you almost missed!"], video: '/Hactually%20Videos/Video_4.mp4', final: true },
 ];
 
 const LAYERS = ['bg-blue-dark', 'bg-blue', 'bg-blue/80', 'bg-blue/60', 'bg-blue/40'];
@@ -32,15 +32,25 @@ const ProfileRow = ({ images, right, speed = 40 }) => (
   </div>
 );
 
-const BlurText = ({ text, center }) => (
-  <span className={`flex flex-wrap gap-x-2 ${center ? 'justify-center' : ''}`}>
-    {text.split(' ').map((word, i) => (
-      <span key={i} className={`animate-blur-reveal ${word.toLowerCase() === 'hactually' ? 'shimmer-text' : ''}`} style={{ animationDelay: `${i * 80}ms` }}>
-        {word}
-      </span>
-    ))}
-  </span>
-);
+const BlurText = ({ lines, center }) => {
+  let wordIndex = 0;
+  return (
+    <span className={`flex flex-col ${center ? 'items-center' : ''}`}>
+      {lines.map((line, lineIdx) => (
+        <span key={lineIdx} className="flex flex-wrap gap-x-2">
+          {line.split(' ').map((word) => {
+            const idx = wordIndex++;
+            return (
+              <span key={idx} className={`animate-blur-reveal ${word.toLowerCase() === 'hactually' ? 'shimmer-text' : ''}`} style={{ animationDelay: `${idx * 80}ms` }}>
+                {word}
+              </span>
+            );
+          })}
+        </span>
+      ))}
+    </span>
+  );
+};
 
 export default function WelcomeScreen() {
   const navigate = useNavigate();
@@ -110,7 +120,7 @@ export default function WelcomeScreen() {
             <ProfileRow images={[...PROFILES.slice(4), ...PROFILES.slice(0, 4)]} right speed={50} />
           </div>
           <div className="flex-1 flex items-center justify-center px-4">
-            <p className="text-blue-light text-2xl font-bold text-center leading-tight"><BlurText text={current.text} center /></p>
+            <p className="text-blue-light text-2xl font-bold text-center leading-tight"><BlurText lines={current.lines} center /></p>
           </div>
           <div className="flex flex-col gap-3 pb-4" style={{ mask: 'linear-gradient(transparent, black)', WebkitMask: 'linear-gradient(transparent, black)' }}>
             <ProfileRow images={[...PROFILES.slice(2), ...PROFILES.slice(0, 2)]} speed={55} />
@@ -119,7 +129,7 @@ export default function WelcomeScreen() {
         </div>
       ) : (
         <div className="flex-1 flex flex-col justify-end z-10 px-4 pb-4">
-          <p key={slide} className="text-blue-light text-3xl font-bold leading-tight"><BlurText text={current.text} /></p>
+          <p key={slide} className="text-blue-light text-3xl font-bold leading-tight"><BlurText lines={current.lines} /></p>
         </div>
       )}
 
