@@ -168,7 +168,7 @@ export default function AuthOptionsScreen() {
 
       <div className="relative z-10 px-4 pb-8">
         {error && <div className="mb-4 p-3 rounded-full bg-orange/20 animate-shake"><p className="text-orange-light text-xs text-center font-bold">{error}</p></div>}
-        <p className="text-blue-light text-3xl font-bold mb-6">
+        <p className="text-blue-light text-[26px] font-bold mb-6">
           <span className="animate-blur-reveal inline-block" style={{ animationDelay: '0ms' }}>continue</span>{' '}
           <span className="animate-blur-reveal inline-block" style={{ animationDelay: '100ms' }}>the</span>{' '}
           <span className="animate-blur-reveal inline-block" style={{ animationDelay: '200ms' }}>moment</span>
