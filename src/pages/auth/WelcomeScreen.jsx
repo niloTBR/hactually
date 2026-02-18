@@ -15,7 +15,7 @@ const PROFILES = [
 
 const SLIDES = [
   { lines: ["You've", "shared a look with someone before."], video: '/Hactually%20Videos/Video_1.mp4' },
-  { lines: ["The moment was real.", "Acting on it wasn't easy."], video: '/Hactually%20Videos/Video_2.mp4' },
+  { lines: ["The moment was real. Acting on it wasn't easy."], video: '/Hactually%20Videos/Video_2.mp4' },
   { lines: ["continue the moment", "with hactually"], profiles: true },
   { lines: ["Meet the ones", "you almost missed!"], video: '/Hactually%20Videos/Video_4.mp4', final: true },
 ];
@@ -37,11 +37,25 @@ const BlurText = ({ lines, center }) => {
   return (
     <span className={`flex flex-col ${center ? 'items-center' : ''}`}>
       {lines.map((line, lineIdx) => (
-        <span key={lineIdx} className="flex flex-wrap gap-x-2">
+        <span key={lineIdx} className={`flex flex-wrap gap-x-2 ${center ? 'justify-center' : ''}`}>
           {line.split(' ').map((word) => {
             const idx = wordIndex++;
+            const isHactually = word.toLowerCase() === 'hactually';
             return (
-              <span key={idx} className={`animate-blur-reveal ${word.toLowerCase() === 'hactually' ? 'shimmer-text' : ''}`} style={{ animationDelay: `${idx * 80}ms` }}>
+              <span
+                key={idx}
+                className="animate-blur-reveal"
+                style={{
+                  animationDelay: `${idx * 80}ms`,
+                  ...(isHactually && {
+                    background: 'linear-gradient(90deg, #E05A3D 0%, #E05A3D 40%, #D9081E 50%, #E05A3D 60%, #E05A3D 100%)',
+                    backgroundSize: '200% auto',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }),
+                }}
+              >
                 {word}
               </span>
             );
@@ -114,15 +128,15 @@ export default function WelcomeScreen() {
       </div>
 
       {current.profiles ? (
-        <div className="flex-1 flex flex-col z-10">
-          <div className="flex flex-col gap-3 pt-4" style={{ mask: 'linear-gradient(black, transparent)', WebkitMask: 'linear-gradient(black, transparent)' }}>
+        <div className="flex-1 flex flex-col z-10 py-8">
+          <div className="flex flex-col gap-3" style={{ mask: 'linear-gradient(black, transparent)', WebkitMask: 'linear-gradient(black, transparent)' }}>
             <ProfileRow images={PROFILES} speed={40} />
             <ProfileRow images={[...PROFILES.slice(4), ...PROFILES.slice(0, 4)]} right speed={50} />
           </div>
           <div className="flex-1 flex items-center justify-center px-4">
-            <p className="text-blue-light text-[26px] font-bold text-center leading-tight"><BlurText lines={current.lines} center /></p>
+            <p className="text-blue-light text-[32px] font-bold text-center leading-tight"><BlurText lines={current.lines} center /></p>
           </div>
-          <div className="flex flex-col gap-3 pb-4" style={{ mask: 'linear-gradient(transparent, black)', WebkitMask: 'linear-gradient(transparent, black)' }}>
+          <div className="flex flex-col gap-3" style={{ mask: 'linear-gradient(transparent, black)', WebkitMask: 'linear-gradient(transparent, black)' }}>
             <ProfileRow images={[...PROFILES.slice(2), ...PROFILES.slice(0, 2)]} speed={55} />
             <ProfileRow images={[...PROFILES.slice(6), ...PROFILES.slice(0, 6)]} right speed={35} />
           </div>
