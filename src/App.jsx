@@ -10,7 +10,6 @@ import {
   LoginScreen,
   OTPScreen,
   ProfileSetupScreen,
-  LocationScreen,
 } from './pages/auth';
 
 // Main screens
@@ -38,13 +37,10 @@ function ProtectedRoute({ children }) {
     return <Navigate to="/auth/welcome" replace />;
   }
 
-  // If authenticated but onboarding not complete, redirect to appropriate step
+  // If authenticated but onboarding not complete, redirect to profile setup
   if (!user?.onboardingComplete) {
     if (!user?.name || !user?.nationality) {
       return <Navigate to="/auth/profile-setup" replace />;
-    }
-    if (!user?.locationPermission) {
-      return <Navigate to="/auth/location" replace />;
     }
   }
 
@@ -145,12 +141,6 @@ export default function App() {
           <Route
             path="/auth/profile-setup"
             element={<ProfileSetupScreen />}
-          />
-
-          {/* Location Permission */}
-          <Route
-            path="/auth/location"
-            element={<LocationScreen />}
           />
 
           {/* Home - accessible for demo */}

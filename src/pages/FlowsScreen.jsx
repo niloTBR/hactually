@@ -25,7 +25,6 @@ const FLOW_SECTIONS = [
       { id: '1A', name: 'See the app introduction and understand what Hactually is about', path: '/auth/welcome', active: true },
       { id: '1B', name: 'Sign up or log in with email', path: '/auth/options', active: true },
       { id: '1C', name: 'Set up my Hactually public profile', path: '/auth/profile-setup', active: true },
-      { id: '1D', name: 'Enable location permissions', path: '/auth/location', active: true },
     ],
   },
   {

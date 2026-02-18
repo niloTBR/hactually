@@ -50,7 +50,7 @@ const Sidebar = ({ activeSection, onNavigate }) => (
   <aside className="fixed left-6 top-6 bottom-6 w-56 bg-white rounded-2xl shadow-xl z-sidebar overflow-hidden">
     {/* Logo */}
     <div className="p-5 border-b border-brown-light/20">
-      <span className="text-xl font-black text-blue">hactually</span>
+      <span className="text-xl font-black text-blue font-sans">hactually</span>
     </div>
 
     {/* Navigation */}
@@ -103,24 +103,26 @@ const SubSection = ({ title, children, className = '' }) => (
 // HACTUALLY LOGO COMPONENT
 // ============================================================================
 
-const HactuallyLogo = ({ className = '', color = 'white', size = 80 }) => (
+const HactuallyLogo = ({ className = '', color = 'white', size = 80, useGradient = false }) => (
   <svg
-    viewBox="0 0 250 100"
+    viewBox="0 0 192 128"
     width={size}
-    height={size * (100/250)}
+    height={size * (128/192)}
     className={className}
-    fill={color}
+    fill={useGradient ? "url(#logoGradient)" : color}
   >
-    {/* 1. Quarter crescent LEFT */}
-    <path d="M 25 7 L 25 93 A 50 50 0 0 1 25 7 Z" />
-    {/* 2. Semi-circle LEFT */}
-    <path d="M 75 0 L 75 100 A 50 50 0 0 1 75 0 Z" />
-    {/* 3. Center circle */}
-    <circle cx="125" cy="50" r="50" />
-    {/* 4. Semi-circle RIGHT */}
-    <path d="M 175 0 L 175 100 A 50 50 0 0 0 175 0 Z" />
-    {/* 5. Quarter crescent RIGHT */}
-    <path d="M 225 7 L 225 93 A 50 50 0 0 0 225 7 Z" />
+    {useGradient && (
+      <defs>
+        <linearGradient id="logoGradient" x1="128" y1="64" x2="128" y2="0" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#E0593D"/>
+          <stop offset="1" stopColor="#D9081E"/>
+        </linearGradient>
+      </defs>
+    )}
+    {/* Left shape - rectangle with quarter circle cut from bottom-right */}
+    <path d="M96 64C96 99.3462 67.3462 128 32 128H0V0H96V64Z" />
+    {/* Right shape - rectangle with quarter circle cut from top-left */}
+    <path d="M192 128H96V64C96 28.6538 124.654 0 160 0H192V128Z" />
   </svg>
 );
 
@@ -128,214 +130,65 @@ const HactuallyLogo = ({ className = '', color = 'white', size = 80 }) => (
 // HACTUALLY BANNER COMPONENT
 // ============================================================================
 
-const HactuallyBanner = ({ imageSrc = '/images/brooke-cagle-Ss3wTFJPAVY-unsplash.jpg' }) => (
+const HactuallyBanner = ({
+  imageSrc = '/images/brooke-cagle-Ss3wTFJPAVY-unsplash.jpg'
+}) => (
   <div className="relative w-full h-80 rounded-2xl overflow-hidden bg-orange-light">
-    {/* Masked duotone image - right side, 50% width */}
-    <div className="absolute inset-y-0 right-0 w-[50%] overflow-hidden">
+    {/* Single image masked into logo shape */}
+    <div className="absolute inset-y-0 right-0 w-[60%] overflow-hidden">
       <svg
-        viewBox="0 0 125 100"
+        viewBox="0 0 192 128"
         preserveAspectRatio="xMaxYMid slice"
         className="absolute inset-y-0 right-0 h-full"
       >
         <defs>
-          {/* Clip path for logo shapes - right half visible */}
-          <clipPath id="bannerLogoMask">
-            <circle cx="125" cy="50" r="50" />
-            <path d="M 75 0 L 75 100 A 50 50 0 0 1 75 0 Z" />
-            <path d="M 25 7 L 25 93 A 50 50 0 0 1 25 7 Z" />
+          {/* Combined logo shape clip path */}
+          <clipPath id="bannerMask">
+            <path d="M96 64C96 99.3462 67.3462 128 32 128H0V0H96V64Z" />
+            <path d="M192 128H96V64C96 28.6538 124.654 0 160 0H192V128Z" />
           </clipPath>
         </defs>
-
-        {/* Image masked by logo - centered, visible */}
+        {/* Single image across both shapes */}
         <image
           href={imageSrc}
           x="0"
           y="0"
-          width="200"
-          height="100"
+          width="192"
+          height="128"
           preserveAspectRatio="xMidYMid slice"
-          clipPath="url(#bannerLogoMask)"
+          clipPath="url(#bannerMask)"
         />
       </svg>
     </div>
 
     {/* Logo text */}
-    <span className="absolute left-12 top-1/2 -translate-y-1/2 text-7xl font-black text-orange">hactually</span>
-  </div>
-);
-
-// ============================================================================
-// SPOTTING CARD COMPONENT - Animated logo mask with scanning effect
-// ============================================================================
-
-const SpottingCard = ({ imageSrc = '/images/ayo-ogunseinde-6W4F62sN_yI-unsplash.jpg' }) => {
-  // Animated SVG mask - exact same as HactuallyLogoAnimated (clip-path, no fade)
-  const animatedMaskSvg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 100">
-      <style>
-        @keyframes moveL { 0% { transform: translateX(0); clip-path: inset(0 0 0 0); } 100% { transform: translateX(-75px); clip-path: inset(0 75% 0 0); } }
-        @keyframes moveR { 0% { transform: translateX(0); clip-path: inset(0 0 0 0); } 100% { transform: translateX(75px); clip-path: inset(0 0 0 75%); } }
-        .wL1 { animation: moveL 1s linear infinite; }
-        .wR1 { animation: moveR 1s linear infinite; }
-        .wL2 { animation: moveL 1s linear infinite 0.33s; }
-        .wR2 { animation: moveR 1s linear infinite 0.33s; }
-        .wL3 { animation: moveL 1s linear infinite 0.66s; }
-        .wR3 { animation: moveR 1s linear infinite 0.66s; }
-      </style>
-      <circle cx="125" cy="50" r="50" fill="white"/>
-      <path class="wL1" d="M 125 0 L 125 100 A 50 50 0 0 1 125 0 Z" fill="white"/>
-      <path class="wR1" d="M 125 0 L 125 100 A 50 50 0 0 0 125 0 Z" fill="white"/>
-      <path class="wL2" d="M 125 0 L 125 100 A 50 50 0 0 1 125 0 Z" fill="white"/>
-      <path class="wR2" d="M 125 0 L 125 100 A 50 50 0 0 0 125 0 Z" fill="white"/>
-      <path class="wL3" d="M 125 0 L 125 100 A 50 50 0 0 1 125 0 Z" fill="white"/>
-      <path class="wR3" d="M 125 0 L 125 100 A 50 50 0 0 0 125 0 Z" fill="white"/>
-    </svg>
-  `;
-  const maskUrl = `url("data:image/svg+xml,${encodeURIComponent(animatedMaskSvg)}")`;
-
-  return (
-    <div className="relative w-48 h-80 rounded-3xl overflow-hidden bg-blue">
-      <style>
-        {`
-          @keyframes textShimmer {
-            0% { background-position: -100% 0; }
-            100% { background-position: 200% 0; }
-          }
-          .shimmer-text {
-            background: linear-gradient(90deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0.4) 100%);
-            background-size: 200% 100%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: textShimmer 2s ease-in-out infinite;
-          }
-        `}
-      </style>
-
-      {/* Full image masked by animated logo */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `url(${imageSrc})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          maskImage: maskUrl,
-          WebkitMaskImage: maskUrl,
-          maskSize: '180% auto',
-          WebkitMaskSize: '180% auto',
-          maskPosition: 'center 45%',
-          WebkitMaskPosition: 'center 45%',
-          maskRepeat: 'no-repeat',
-          WebkitMaskRepeat: 'no-repeat',
-        }}
-      />
-
-      {/* Spotting text with shimmer animation */}
-      <div className="absolute bottom-8 left-0 right-0 flex items-center justify-center">
-        <span className="shimmer-text text-[10px] font-medium tracking-widest uppercase">Spotting</span>
-      </div>
-    </div>
-  );
-};
-
-// ============================================================================
-// PROFILE CARD COMPONENT - Logo mask revealing static background image
-// ============================================================================
-
-// Logo mask as inline SVG data URL
-const logoMaskSvg = `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 100">
-  <path d="M 25 7 L 25 93 A 50 50 0 0 1 25 7 Z" fill="white"/>
-  <path d="M 75 0 L 75 100 A 50 50 0 0 1 75 0 Z" fill="white"/>
-  <circle cx="125" cy="50" r="50" fill="white"/>
-  <path d="M 175 0 L 175 100 A 50 50 0 0 0 175 0 Z" fill="white"/>
-  <path d="M 225 7 L 225 93 A 50 50 0 0 0 225 7 Z" fill="white"/>
-</svg>
-`;
-const logoMaskUrl = `url("data:image/svg+xml,${encodeURIComponent(logoMaskSvg)}")`;
-
-const ProfileCard = ({
-  imageSrc = '/images/ayo-ogunseinde-6W4F62sN_yI-unsplash.jpg',
-  name = 'Sophia',
-}) => (
-  <div className="relative w-48 h-80 rounded-3xl overflow-hidden bg-gradient-orange">
-    {/* ONE static background image, masked by HUGE logo - center circle bleeds out */}
-    <div
-      className="absolute inset-0"
-      style={{
-        backgroundImage: `url(${imageSrc})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center center',
-        maskImage: logoMaskUrl,
-        WebkitMaskImage: logoMaskUrl,
-        maskSize: '280% auto',
-        WebkitMaskSize: '280% auto',
-        maskPosition: 'center 42%',
-        WebkitMaskPosition: 'center 42%',
-        maskRepeat: 'no-repeat',
-        WebkitMaskRepeat: 'no-repeat',
-      }}
-    />
-
-    {/* Name with same shimmer animation as Spotting */}
-    <div className="absolute bottom-8 left-0 right-0 flex items-center justify-center">
-      <span className="shimmer-text text-[10px] font-medium tracking-widest uppercase">{name}</span>
-    </div>
+    <span className="absolute left-12 top-1/2 -translate-y-1/2 text-7xl font-black text-orange font-sans">hactually</span>
   </div>
 );
 
 const HactuallyBannerBlue = () => (
   <div className="relative w-full h-80 rounded-2xl overflow-hidden bg-blue">
-    {/* Dark red logo - left side */}
-    <div className="absolute inset-y-0 left-8 flex items-center">
-      <HactuallyLogo size={520} color="#C94A2F" />
+    {/* Logo shape on the left - same as first banner */}
+    <div className="absolute inset-y-0 left-0 w-[60%] overflow-hidden">
+      <svg
+        viewBox="0 0 192 128"
+        preserveAspectRatio="xMinYMid slice"
+        className="absolute inset-y-0 left-0 h-full"
+      >
+        <defs>
+          <linearGradient id="bannerBlueGradient" x1="128" y1="64" x2="128" y2="0" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#E0593D"/>
+            <stop offset="1" stopColor="#D9081E"/>
+          </linearGradient>
+        </defs>
+        <path d="M96 64C96 99.3462 67.3462 128 32 128H0V0H96V64Z" fill="url(#bannerBlueGradient)" />
+        <path d="M192 128H96V64C96 28.6538 124.654 0 160 0H192V128Z" fill="url(#bannerBlueGradient)" />
+      </svg>
     </div>
 
-    {/* Light blue text - right side, overlapping logo */}
-    <span className="absolute right-12 top-1/2 -translate-y-1/2 text-7xl font-black text-blue-light z-10">hactually</span>
+    {/* Text on the right - mirrored from first banner */}
+    <span className="absolute right-12 top-1/2 -translate-y-1/2 text-7xl font-black text-blue-light z-10 font-sans">hactually</span>
   </div>
-);
-
-const HactuallyLogoAnimated = ({ className = '', color = 'white', size = 80 }) => (
-  <svg
-    viewBox="0 0 250 100"
-    width={size}
-    height={size * (100/250)}
-    className={className}
-    fill={color}
-  >
-    <style>
-      {`
-        @keyframes moveLeftAndMask {
-          0% { transform: translateX(0); clip-path: inset(0 0 0 0); }
-          100% { transform: translateX(-75px); clip-path: inset(0 75% 0 0); }
-        }
-        @keyframes moveRightAndMask {
-          0% { transform: translateX(0); clip-path: inset(0 0 0 0); }
-          100% { transform: translateX(75px); clip-path: inset(0 0 0 75%); }
-        }
-        .semi-l { animation: moveLeftAndMask 1s linear infinite; }
-        .semi-r { animation: moveRightAndMask 1s linear infinite; }
-        .semi-l-2 { animation: moveLeftAndMask 1s linear infinite 0.33s; }
-        .semi-r-2 { animation: moveRightAndMask 1s linear infinite 0.33s; }
-        .semi-l-3 { animation: moveLeftAndMask 1s linear infinite 0.66s; }
-        .semi-r-3 { animation: moveRightAndMask 1s linear infinite 0.66s; }
-      `}
-    </style>
-
-    {/* CENTER CIRCLE - always visible */}
-    <circle cx="125" cy="50" r="50" />
-
-    {/* Wave 1 - 0s */}
-    <path className="semi-l" d="M 125 0 L 125 100 A 50 50 0 0 1 125 0 Z" />
-    <path className="semi-r" d="M 125 0 L 125 100 A 50 50 0 0 0 125 0 Z" />
-    {/* Wave 2 - 0.33s */}
-    <path className="semi-l-2" d="M 125 0 L 125 100 A 50 50 0 0 1 125 0 Z" />
-    <path className="semi-r-2" d="M 125 0 L 125 100 A 50 50 0 0 0 125 0 Z" />
-    {/* Wave 3 - 0.66s */}
-    <path className="semi-l-3" d="M 125 0 L 125 100 A 50 50 0 0 1 125 0 Z" />
-    <path className="semi-r-3" d="M 125 0 L 125 100 A 50 50 0 0 0 125 0 Z" />
-  </svg>
 );
 
 // ============================================================================
@@ -710,35 +563,17 @@ export default function StyleGuide() {
               <h2 className="text-2xl font-bold text-brown-dark mb-8">Logo</h2>
               <h4 className="text-xs font-bold text-brown-dark mb-4 uppercase tracking-wider">App Icons</h4>
               <div className="grid grid-cols-4 gap-4">
-                <div className="aspect-square rounded-3xl bg-blue-light flex items-center justify-center">
-                  <HactuallyLogo size={140} color="#4752C4" />
-                </div>
                 <div className="aspect-square rounded-3xl bg-orange-light flex items-center justify-center">
-                  <HactuallyLogo size={140} color="#C94A2F" />
+                  <HactuallyLogo size={140} useGradient />
+                </div>
+                <div className="aspect-square rounded-3xl bg-blue-light flex items-center justify-center">
+                  <HactuallyLogo size={140} color="#5865F2" />
                 </div>
                 <div className="aspect-square rounded-3xl bg-brown-light flex items-center justify-center">
                   <HactuallyLogo size={140} color="#6A6B5A" />
                 </div>
                 <div className="aspect-square rounded-3xl bg-green-light flex items-center justify-center">
                   <HactuallyLogo size={140} color="#3A6262" />
-                </div>
-              </div>
-
-              <hr className="border-brown/20 my-8" />
-
-              <h4 className="text-xs font-bold text-brown-dark mb-4 uppercase tracking-wider">Animated Logo</h4>
-              <div className="grid grid-cols-4 gap-4">
-                <div className="aspect-square rounded-3xl bg-blue-light flex items-center justify-center">
-                  <HactuallyLogoAnimated size={140} color="#4752C4" />
-                </div>
-                <div className="aspect-square rounded-3xl bg-orange-light flex items-center justify-center">
-                  <HactuallyLogoAnimated size={140} color="#C94A2F" />
-                </div>
-                <div className="aspect-square rounded-3xl bg-brown-light flex items-center justify-center">
-                  <HactuallyLogoAnimated size={140} color="#6A6B5A" />
-                </div>
-                <div className="aspect-square rounded-3xl bg-green-light flex items-center justify-center">
-                  <HactuallyLogoAnimated size={140} color="#3A6262" />
                 </div>
               </div>
 
@@ -751,13 +586,6 @@ export default function StyleGuide() {
               <h4 className="text-xs font-bold text-brown-dark mb-4 uppercase tracking-wider">Banner (Blue Variant)</h4>
               <HactuallyBannerBlue />
 
-              <hr className="border-brown/20 my-8" />
-
-              <h4 className="text-xs font-bold text-brown-dark mb-4 uppercase tracking-wider">Feature Cards</h4>
-              <div className="flex gap-6 items-start">
-                <SpottingCard imageSrc="/images/ayo-ogunseinde-6W4F62sN_yI-unsplash.jpg" />
-                <ProfileCard imageSrc="/images/ayo-ogunseinde-6W4F62sN_yI-unsplash.jpg" name="Sophia" />
-              </div>
             </div>
           </section>
 
@@ -773,16 +601,16 @@ export default function StyleGuide() {
                 <h4 className="text-xs font-bold text-brown-dark mb-4 uppercase tracking-wider">Primary</h4>
                 <div className="grid grid-cols-4 gap-4">
                   <div className="h-24 rounded-xl bg-white flex items-center justify-center border border-brown-light/30">
-                    <span className="text-lg font-black text-blue">hactually</span>
+                    <span className="text-lg font-black text-blue font-sans">hactually</span>
                   </div>
                   <div className="h-24 rounded-xl bg-blue-light flex items-center justify-center">
-                    <span className="text-lg font-black text-blue">hactually</span>
+                    <span className="text-lg font-black text-blue font-sans">hactually</span>
                   </div>
                   <div className="h-24 rounded-xl bg-blue flex items-center justify-center">
-                    <span className="text-lg font-black text-white">hactually</span>
+                    <span className="text-lg font-black text-white font-sans">hactually</span>
                   </div>
                   <div className="h-24 rounded-xl bg-gradient-blue flex items-center justify-center">
-                    <span className="text-lg font-black text-white">hactually</span>
+                    <span className="text-lg font-black text-white font-sans">hactually</span>
                   </div>
                 </div>
                 <div className="grid grid-cols-4 gap-4 mt-1.5">
@@ -817,7 +645,7 @@ export default function StyleGuide() {
               {/* Font Family */}
               <div className="mb-8">
                 <h4 className="text-xs font-bold text-brown-dark mb-4 uppercase tracking-wider">Font Family</h4>
-                <p className="text-3xl font-black text-blue mb-2">hactually</p>
+                <p className="text-3xl font-black text-blue mb-2 font-sans">hactually</p>
                 <p className="text-xs text-brown font-mono">font-family: 'Ezra', sans-serif</p>
               </div>
 

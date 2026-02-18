@@ -231,12 +231,12 @@ export default function ProfileSetupScreen() {
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col px-6 pt-6 overflow-y-auto overflow-x-visible pb-4">
         {/* Title */}
-        <h1 className="text-black text-xl font-bold mb-6 animate-fade-in-up">
+        <h1 className="text-[#5865F2] text-xl font-bold mb-6 animate-fade-in-up font-sans">
           Create your profile
         </h1>
 
         {/* Photo Upload - Modern style */}
-        <div className="flex items-start gap-4 mb-6 animate-fade-in-up stagger-1">
+        <div className="flex items-center gap-4 mb-6 animate-fade-in-up stagger-1">
           <label className="cursor-pointer group flex-shrink-0">
             <input
               type="file"
@@ -262,11 +262,10 @@ export default function ProfileSetupScreen() {
               )}
             </div>
           </label>
-          <div className="flex-1 pt-2">
-            <p className="text-black text-sm font-bold mb-1">Add a photo</p>
-            <p className="text-brown text-xs">Show your best self</p>
+          <div className="flex-1 flex flex-col justify-center">
+            <p className="text-[#5865F2] text-sm font-bold font-sans">Add a photo, show your best self</p>
             {formData.photoPreview && (
-              <label className="text-blue text-xs font-medium cursor-pointer hover:underline mt-2 inline-block">
+              <label className="text-blue text-xs font-medium cursor-pointer hover:underline mt-1 inline-block">
                 <input
                   type="file"
                   accept="image/*"
@@ -352,7 +351,7 @@ export default function ProfileSetupScreen() {
 
         {/* Bio Section */}
         <div className="mt-6 animate-fade-in-up stagger-3">
-          <p className="text-black text-sm font-bold mb-2">Tell us about yourself</p>
+          <p className="text-[#5865F2] text-sm font-bold mb-2 font-sans">Tell us about yourself</p>
           <div className="relative">
             <textarea
               value={formData.bio}
@@ -369,7 +368,7 @@ export default function ProfileSetupScreen() {
 
         {/* Interests Section */}
         <div className="mt-6 animate-fade-in-up stagger-4">
-          <p className="text-black text-sm font-bold mb-2">Pick your interests</p>
+          <p className="text-[#5865F2] text-sm font-bold mb-2 font-sans">Pick your interests</p>
           <p className="text-brown text-xs mb-3">Choose up to 5</p>
 
           {/* Selected interests */}
