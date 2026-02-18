@@ -115,7 +115,6 @@ export default function WelcomeScreen() {
       {current.video && (
         <div className="absolute bottom-0 inset-x-0 h-1/2 z-[1] pointer-events-none" style={{ backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', mask: 'linear-gradient(to top, black, transparent)', WebkitMask: 'linear-gradient(to top, black, transparent)' }} />
       )}
-      <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-blue-dark/80 to-transparent z-[2] pointer-events-none" />
 
       <div className="relative z-20 flex gap-1 px-4 pt-12">
         {SLIDES.map((_, i) => (
