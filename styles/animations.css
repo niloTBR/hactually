@@ -798,3 +798,55 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ==========================================================================
+   ONBOARDING ANIMATIONS
+   ========================================================================== */
+
+@keyframes marqueeLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marqueeRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes blurReveal {
+  0% { opacity: 0; filter: blur(8px); transform: translateY(8px); }
+  100% { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+
+@keyframes shimmerText {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes gradientBorder {
+  0% { background-position: 0% center; }
+  100% { background-position: 300% center; }
+}
+
+.animate-marquee-left { animation: marqueeLeft 40s linear infinite; }
+.animate-marquee-right { animation: marqueeRight 40s linear infinite; }
+.animate-blur-reveal { animation: blurReveal 0.4s ease-out forwards; opacity: 0; }
+.animate-gradient-border { animation: gradientBorder 3s linear infinite; }
+
+.shimmer-text {
+  background: linear-gradient(90deg, #E05A3D 0%, #E05A3D 40%, #D9081E 50%, #E05A3D 60%, #E05A3D 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerText 2s ease-in-out infinite;
+}
+
+.shimmer-logo {
+  background: linear-gradient(90deg, #C8E3F4 0%, #C8E3F4 40%, #fff 50%, #C8E3F4 60%, #C8E3F4 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerText 3s ease-in-out infinite;
+}
