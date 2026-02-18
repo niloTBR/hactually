@@ -112,7 +112,9 @@ export default function WelcomeScreen() {
         <video key={i} ref={el => { videoRefs.current[i] = el; if (el && s.final) el.playbackRate = 0.5; }} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500" style={{ opacity: slide === i ? 1 : 0, objectPosition: s.final ? '70% center' : 'center' }} src={s.video} />
       ))}
 
-      {current.video && <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-blue to-transparent z-[1] pointer-events-none" />}
+      {current.video && (
+        <div className="absolute bottom-0 inset-x-0 h-1/2 z-[1] pointer-events-none" style={{ backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', mask: 'linear-gradient(to top, black, transparent)', WebkitMask: 'linear-gradient(to top, black, transparent)' }} />
+      )}
       <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-blue-dark/80 to-transparent z-[2] pointer-events-none" />
 
       <div className="relative z-20 flex gap-1 px-4 pt-12">
